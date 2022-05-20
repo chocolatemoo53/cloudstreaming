@@ -22,6 +22,3 @@ Streaming technology refers to what you prefer to stream your server instance to
 | loki-47-6F-64   | https://github.com/loki-47-6F-64/ | https://github.com/loki-47-6F-64/sunshine                              |
 | The Parsec Team | https://github.com/parsec-cloud   | https://github.com/parsec-cloud/Cloud-GPU-Updater / https://parsec.app |
 | NiceDCV/AWS     | https://github.com/aws            | https://aws.amazon.com/hpc/dcv/                                        |
-
-This repository contains icons from the Noun Project. These include: 
-- cog by Vectors Market from the Noun Project

@@ -1,6 +1,6 @@
 $osType = Get-CimInstance -ClassName Win32_OperatingSystem
 $WorkDir = "$PSScriptRoot\..\Bin"
-$Documents = [Environment]::GetFolderPath("MyDocuments")
+$specialFolder = "c:\cloudopenstream"
 Function GetFile([string]$Url, [string]$Path, [string]$Name) {
     try {
         if(![System.IO.File]::Exists($Path)) {
@@ -14,7 +14,7 @@ Function GetFile([string]$Url, [string]$Path, [string]$Name) {
 
 Import-Module BitsTransfer
 
-Write-Host "If you are not running Windows Server, a portion of the script is skipped" -ForegroundColor Red
+Write-Host "If you are not running Windows Server, a portion of this step is skipped" -ForegroundColor Red
 
 if($osType.ProductType -eq 3) {
 Write-Host "Applying general fixes..."
@@ -68,10 +68,10 @@ $setWallpaper = (Read-Host -Prompt 'Would you like to do so? (y/n)').ToLower() -
 
 if($setWallpaper) {
 GetFile "https://wallpapercave.com/wp/wp7283005.jpg" "$WorkDir\wp7283005.jpg" "Default Server 2019 Wallpaper"
-Move-Item -Path "$WorkDir\wp7283005.jpg" -Destination "$Documents\wallpaper.jpg"
+Move-Item -Path "$WorkDir\wp7283005.jpg" -Destination "$specialfolder\wallpaper.jpg"
 Write-Host "Setting the wallpaper..."
 New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies" -Name "System" | Out-Null
-New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name Wallpaper -value "C:\Users\Administrator\Documents\wallpaper.jpg" | Out-Null
+New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name Wallpaper -value "$specialfolder\wallpaper.jpg" | Out-Null
 New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name WallpaperStyle -value 2 | Out-Null
 Stop-Process -Name Explorer -Force
 }	

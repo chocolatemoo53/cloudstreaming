@@ -11,7 +11,7 @@ function Elevated {
  }
 
  if (-not(Elevated))
- { throw "Please run this script as a built-in Administrator" 
+ { throw "Please run this script as a built-in or elevated Administrator" 
    Stop-Transcript
    Pause
 }
@@ -25,7 +25,12 @@ Write-HostCenter 'Hello there, the script is ready!' -ForegroundColor Green
 Write-Host ""
 
 if(!$RebootSkip) {
-    Write-Host "Your machine will restart at least once during this setup." -ForegroundColor Red
+    Write-Host "Creating a special directory for this script to use..." -ForegroundColor Yellow
+    New-Item -Path C:\cloudopenstream -ItemType directory | Out-Null
+    New-Item -Path C:\cloudopenstream\Installers -ItemType directory | Out-Null
+    New-Item -Path C:\cloudopenstream\Drivers -ItemType directory | Out-Null
+    Write-Host "Your machine will restart at least once during this setup!" -ForegroundColor Red
+    Write-Host "If you want to skip this, use the -RebootSkip switch." -ForegroundColor Red
     Write-Host ""
     Write-Host "Step 1 - Installing required software" -ForegroundColor Yellow
     & $PSScriptRoot\Steps\step1.ps1 -Main
@@ -49,7 +54,7 @@ Write-Host "Welcome back, let's continue with step two."
 	Write-Host "Your IP address is $ip" -ForegroundColor Red
 	Write-Host "If you liked the script, please star it on GitHub!" -ForegroundColor Green
 	
-    $restart = (Read-Host "Depending on the situation, you may see a black screen without a restart. Restart now? (y/n)").ToLower();
+    $restart = (Read-Host "It is recommenended to restart your server. Restart now? (y/n)").ToLower();
     if($restart -eq "y") {
     Restart-Computer -Force 
 }

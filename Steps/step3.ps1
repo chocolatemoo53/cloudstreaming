@@ -1,5 +1,5 @@
 $WorkDir = "$PSScriptRoot\..\Bin"
-$path = [Environment]::GetFolderPath("Desktop")
+$specialFolder = "C:\cloudopenstream"
 Function GetFile([string]$Url, [string]$Path, [string]$Name) {
     try {
         if(![System.IO.File]::Exists($Path)) {
@@ -14,35 +14,48 @@ Function GetFile([string]$Url, [string]$Path, [string]$Name) {
 Import-Module BitsTransfer
 
 Write-Host "All software after this point is optional, it should install silently..."
-$InstallFirefox = (Read-Host "Would you like to download and install Firefox? (y/n)").ToLower() -eq "y"
+Write-Host "Choose your browser(s), or not" -ForegroundColor Green
+Write-Host ""
+$InstallFirefox = (Read-Host "Would you like to download and install Mozilla Firefox? (y/n)").ToLower() -eq "y"
 
 if($InstallFirefox) {
     Write-Host ""
-    New-Item -Path $path\FirefoxTemp -ItemType directory | Out-Null
-    GetFile "https://download.mozilla.org/?product=firefox-msi-latest-ssl&os=win64&lang=en-US" "$path\FirefoxTemp\firefox.msi" "Firefox" 
+    GetFile "https://download.mozilla.org/?product=firefox-msi-latest-ssl&os=win64&lang=en-US" "$specialFolder\Installers\firefox.msi" "Firefox" 
     Write-Host "Installing Firefox..."
-    Start-Process -FilePath "msiexec.exe" -Wait -ArgumentList '/quiet /i C:\Users\Administrator\Desktop\FirefoxTemp\firefox.msi'
+    Start-Process -FilePath "msiexec.exe" -Wait -ArgumentList '/q /i C:\cloudopenstream\Installers\firefox.msi'
     Write-Host ""
-    Write-Host "Removing temporary folder from the desktop..."
-    Remove-Item -Path $path\FirefoxTemp -force -Recurse | Out-Null
 }
 else {
     Write-Host ""
     Write-Host "Skipping Firefox..."
 }
 
-Write-Host ""
-$InstallSteam = (Read-Host "Would you like to download and install Steam? (y/n)").ToLower() -eq "y"
+$InstallEdge = (Read-Host "Would you like to download and install Microsoft Edge? (y/n)").ToLower() -eq "y"
 
-if($InstallSteam) {
+if($InstallEdge) {
     Write-Host ""
-    GetFile "https://cdn.akamai.steamstatic.com/client/installer/SteamSetup.exe" "$WorkDir\SteamSetup.exe" "Steam"
-    Write-Host "Installing Steam..."
-    Start-Process -FilePath "$WorkDir\SteamSetup.exe" -ArgumentList "/S" -NoNewWindow -Wait -Passthru
+    GetFile "https://msedge.sf.dl.delivery.mp.microsoft.com/filestreamingservice/files/deca85f5-369c-4c01-933d-f1b544563b31/MicrosoftEdgeEnterpriseX64.msi" "$specialFolder\Installers\edge.msi" "Firefox" 
+    Write-Host "Installing Microsoft Edge..."
+    Start-Process -FilePath "msiexec.exe" -Wait -ArgumentList '/qn /i C:\cloudopenstream\Installers\edge.msi'
+    Write-Host ""
 }
 else {
     Write-Host ""
-    Write-Host "Skipping Steam..."
+    Write-Host "Skipping Microsoft Edge..."
+}
+
+$InstallChrome = (Read-Host "Would you like to download and install Google Chrome? (y/n)").ToLower() -eq "y"
+
+if($InstallChrome) {
+    Write-Host ""
+    GetFile "https://dl.google.com/tag/s/dl/chrome/install/googlechromestandaloneenterprise64.msi" "$specialFolder\Installers\chrome.msi" "Google Chrome" 
+    Write-Host "Installing Google Chrome..."
+    Start-Process -FilePath "msiexec.exe" -Wait -ArgumentList '/qn /i C:\cloudopenstream\Installers\chrome.msi'
+    Write-Host ""
+}
+else {
+    Write-Host ""
+    Write-Host "Skipping Google Chrome..."
 }
 
 $Install7Zip = (Read-Host "Would you like to download and install 7Zip? (y/n)").ToLower() -eq "y"
@@ -58,14 +71,29 @@ else {
     Write-Host "Skipping 7Zip..."
 }
 
+Write-Host ""
+Write-Host "Choose your game launchers..." -ForegroundColor Green
+Write-Host ""
+$InstallSteam = (Read-Host "Would you like to download and install Steam? (y/n)").ToLower() -eq "y"
+
+if($InstallSteam) {
+    Write-Host ""
+    GetFile "https://cdn.akamai.steamstatic.com/client/installer/SteamSetup.exe" "$WorkDir\SteamSetup.exe" "Steam"
+    Write-Host "Installing Steam..."
+    Start-Process -FilePath "$WorkDir\SteamSetup.exe" -ArgumentList "/S" -NoNewWindow -Wait -Passthru
+}
+else {
+    Write-Host ""
+    Write-Host "Skipping Steam..."
+}
+
 $InstallEpic = (Read-Host "Would you like to download and install Epic Games? (y/n)").ToLower() -eq "y"
 
 if($InstallEpic) {
     Write-Host ""
-    New-Item -Path $path\EpicTemp -ItemType directory | Out-Null
-    GetFile "https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncherInstaller.msi" "$path\EpicTemp\epic.msi" "Epic Games"
+    GetFile "https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncherInstaller.msi" "$path\Installers\epic.msi" "Epic Games"
     Write-Host "Installing Epic Games..."
-    Start-Process -FilePath "msiexec.exe" -Wait -ArgumentList '/qn /i C:\Users\Administrator\Desktop\EpicTemp\epic.msi'
+    Start-Process -FilePath "msiexec.exe" -Wait -ArgumentList '/qn /i C:\cloudopenstream\Installers\epic.msi'
     Write-Host ""
     Write-Host "Removing temporary folder from the desktop..."
     Remove-Item -Path $path\EpicTemp -force -Recurse | Out-Null

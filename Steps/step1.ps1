@@ -1,6 +1,6 @@
 $WorkDir = "$PSScriptRoot\..\Bin"
-$path = [Environment]::GetFolderPath("Desktop")
 $SunshineDir = "$ENV:HOMEDRIVE\sunshine"
+$specialFolder = "c:\cloudopenstream"
 Function GetFile([string]$Url, [string]$Path, [string]$Name) {
     try {
         if(![System.IO.File]::Exists($Path)) {
@@ -42,20 +42,16 @@ if ($streamTech -eq 1) {
 
 if ($streamTech -eq 2) {
     Write-Host ""
-    New-Item -Path $path\DCVTemp -ItemType directory | Out-Null
-    GetFile "https://d1uj6qtbmh3dt5.cloudfront.net/2021.1/Servers/nice-dcv-server-x64-Release-2021.1-10851.msi" "$path\DCVTemp\dcv.msi" "NiceDCV" 
+    GetFile "https://d1uj6qtbmh3dt5.cloudfront.net/nice-dcv-server-x64-Release.msi" "$specialFolder\nicedcv.msi" "NiceDCV" 
     Write-Host "Installing NiceDCV..."
-    Start-Process -FilePath "msiexec.exe" -Wait -ArgumentList '/qn /i C:\Users\Administrator\Desktop\DCVTemp\dcv.msi'
-    Write-Host ""
-    Write-Host "Removing temporary folder from the desktop..."
-    Remove-Item -Path $path\DCVTemp -force -Recurse
+    Start-Process -FilePath "msiexec.exe" -Wait -ArgumentList '/qn /i C:\cloudopenstream\nicedcv.msi'
 }
 
 if ($streamTech -eq 3) {
 GetFile "https://github.com/SunshineStream/Sunshine/releases/latest/download/Sunshine-Windows.zip" "$WorkDir\Sunshine-Windows.zip" "Sunshine"
 Expand-Archive -Path "$WorkDir\Sunshine-Windows.zip" -DestinationPath "$SunshineDir" -Force
 Write-Host ""
-Write-Host "Making sure Sunshine begins at startup..." -ForegroundColor Green
+Write-Host "Making sure Sunshine begins at startup..." -ForegroundColor Yellow
 
 if (!(Get-ScheduledTask -TaskName "StartSunshine" -ErrorAction SilentlyContinue)) {
 $action = New-ScheduledTaskAction -Execute "cmd.exe" -Argument "/c start /min sunshine.exe" -WorkingDirectory "$SunshineDir"
@@ -64,7 +60,6 @@ $principal = New-ScheduledTaskPrincipal -GroupId "BUILTIN\Administrators" -RunLe
 Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "StartSunshine" -Principal $principal -Description "Runs Sunshine at startup" | Out-Null
 }
 
-Write-Host "It worked, continuing on..." -ForegroundColor Green
 Write-Host ""
 Write-Host "Please choose a username and password to configure Sunshine..."
 $NewUsername = Read-Host "Username"
@@ -88,35 +83,34 @@ $Shortcut = $WScriptShell.CreateShortcut($ShortcutFile)
 $Shortcut.TargetPath = $TargetFile
 $Shortcut.Arguments = "/c start sunshine.exe"
 $Shortcut.WorkingDirectory = $SunshineDir
-$Shortcut.IconLocation = "$WorkDir\sunshine.ico"
+$Shortcut.IconLocation = "$SunshineDir\sunshine.ico"
 $Shortcut.Save()
 $TargetFile = "$ENV:windir\explorer.exe"
 $ShortcutFile = "$env:Public\Desktop\Sunshine Settings.lnk"
 $WScriptShell = New-Object -ComObject WScript.Shell
 $Shortcut = $WScriptShell.CreateShortcut($ShortcutFile)
 $Shortcut.TargetPath = $TargetFile
-$Shortcut.IconLocation = "$WorkDir\cog.ico"
+$Shortcut.IconLocation = "$SunshineDir\cog.ico"
 $Shortcut.Arguments = "https://127.0.0.1:47990"
 $Shortcut.Save()
 Write-Host "Adding Sunshine rules to Windows Firewall..."
 New-NetFirewallRule -DisplayName "Sunshine/Moonlight TCP" -Direction inbound -LocalPort 47984,47989,48010,47990 -Protocol TCP -Action Allow | Out-Null
 New-NetFirewallRule -DisplayName "Sunshine/Moonlight UDP" -Direction inbound -LocalPort 47998,47999,48000,48010,47990 -Protocol UDP -Action Allow | Out-Null
-Write-Host ""
+Write-Host "Installing the Xbox 360 driver for Sunshine..." -ForegroundColor Green
+GetFile "http://web.archive.org/web/20200425215425/http://download.microsoft.com/download/6/9/4/69446ACF-E625-4CCF-8F56-58B589934CD3/Xbox360_64Eng.exe" "$specialFolder\Drivers\xbox360.exe" "Xbox 360 Driver"
+Write-Host "Installing Xbox 360 Driver..."
+Start-Process -FilePath "$specialFolder\Drivers\xbox360.exe" -Wait -NoNewWindow -Passthru
 Write-Host "Installing the gamepad driver for Sunshine..." -ForegroundColor Green
-New-Item -Path $path\GamepadTemp -ItemType directory | Out-Null
-GetFile "https://github.com/ViGEm/ViGEmBus/releases/latest/download/ViGEmBusSetup_x64.msi" "$path\GamepadTemp\driver.msi" "Gamepad Driver"
+GetFile "https://github.com/ViGEm/ViGEmBus/releases/latest/download/ViGEmBusSetup_x64.msi" "$specialFolder\Drivers\vigembus.msi" "Gamepad Driver"
 Write-Host "Installing Gamepad Driver..."
-Start-Process -FilePath "msiexec.exe" -Wait -ArgumentList '/qn /i C:\Users\Administrator\Desktop\GamepadTemp\driver.msi'
-Write-Host ""
-Write-Host "Removing temporary folder from the desktop..."
-Remove-Item -Path $path\GamepadTemp -force -Recurse
+Start-Process -FilePath "msiexec.exe" -Wait -ArgumentList '/qn /i C:\cloudopenstream\Drivers\vigembus.msi'
+Write-Host "Setup for Sunshine has completed!" -ForegroundColor Green
 } 
 
 if ($streamTech -eq 1) {
 $Audio = (Read-Host "Would you like to download audio drivers for Parsec? (y/n)").ToLower() -eq "y"
 if($Audio) { 
 GetFile "https://download.vb-audio.com/Download_CABLE/VBCABLE_Driver_Pack43.zip" "$WorkDir\vbcable.zip" "VBCABLE"
-New-Item -Path C:\cloudopenstream -ItemType directory | Out-Null
 Write-Host "Installing VBCABLE..."
 Expand-Archive -Path "$WorkDir\vbcable.zip" -DestinationPath "$WorkDir\vbcable"
 (Get-AuthenticodeSignature -FilePath "$WorkDir\vbcable\vbaudio_cable64_win7.cat").SignerCertificate | Export-Certificate -Type CERT -FilePath "c:\cloudopenstream\vbcable.cer" | Out-Null

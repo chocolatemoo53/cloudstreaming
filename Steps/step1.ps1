@@ -100,9 +100,9 @@ Write-Host "Setting up gamepad support..." -ForegroundColor Green
 GetFile "http://www.download.windowsupdate.com/msdownload/update/v3-19990518/cabpool/2060_8edb3031ef495d4e4247e51dcb11bef24d2c4da7.cab" "$specialFolder\Drivers\xbox360.cab" "Xbox 360 Driver"
 GetFile "https://github.com/ViGEm/ViGEmBus/releases/latest/download/ViGEmBusSetup_x64.msi" "$specialFolder\Drivers\vigembus.msi" "VIGEMBUS Driver"
 cmd.exe /c "C:\Windows\System32\expand.exe C:\cloudopenstream\Drivers\xbox360.cab -F:* C:\cloudopenstream\Drivers\" | Out-Null
-cmd.exe /c "C:\Windows\System32\expand.exe C:\cloudopenstream\Drivers\vigembus.msi -F:* C:\cloudopenstream\Drivers\" | Out-Null
-cmd.exe /c '"C:\cloudopenstream\10\x64\devcon.exe" dp_add "C:\cloudopenstream\Driversxusb21.inf"' | Out-Null
-Start-Process -FilePath "C:\cloudopenstream\10\x64\devcon.exe" -ArgumentList '/r disable "HDAUDIO\FUNC_01&VEN_10DE&DEV_0083&SUBSYS_10DE11A3*"'
+Start-Process -FilePath "msiexec.exe" -Wait -ArgumentList '/a c:\cloudopenstream\Drivers\vigembus.msi /qb TARGETDIR=C:\cloudopenstream\Drivers\'
+cmd.exe /c '"C:\cloudopenstream\Drivers\10\x64\devcon.exe" dp_add "C:\cloudopenstream\Driversxusb21.inf"' | Out-Null
+Start-Process -FilePath "C:\cloudopenstream\Drivers\10\x64\devcon.exe" -ArgumentList '/r disable "HDAUDIO\FUNC_01&VEN_10DE&DEV_0083&SUBSYS_10DE11A3*"'
 Write-Host "Setup for Sunshine has completed!" -ForegroundColor Green
 } 
 

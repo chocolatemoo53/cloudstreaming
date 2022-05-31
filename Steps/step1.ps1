@@ -1,7 +1,8 @@
 $WorkDir = "$PSScriptRoot\..\Bin"
 $SunshineDir = "$ENV:HOMEDRIVE\sunshine"
 $specialFolder = "c:\cloudopenstream"
-$TargetDirectory = "$specialFolder\Drivers\"
+$TargetDirectory = "c:\cloudopenstream\Drivers\"
+$MsiPath = "c:\cloudopenstream\Drivers\vigembus.msi"
 Function GetFile([string]$Url, [string]$Path, [string]$Name) {
     try {
         if(![System.IO.File]::Exists($Path)) {
@@ -11,28 +12,6 @@ Function GetFile([string]$Url, [string]$Path, [string]$Name) {
     } catch {
         throw "Download failed"
     }
-}
-
-# From http://blogsprajeesh.blogspot.com/2015/07/pstip-extract-contents-of-msi.html
-Function Export-MsiContents
-{
-       [CmdletBinding()]
-       param
-       (
-              [Parameter(Mandatory = $true, Position=0)]
-        [ValidateNotNullOrEmpty()]
-        [ValidateScript({Test-Path $_})]
-        [ValidateScript({$_.EndsWith(".msi")})]
-        [String] $MsiPath,
-
-        [Parameter(Mandatory=$false, Position=1)]
-        [String] $TargetDirectory
-       )
-
-    $MsiPath = Resolve-Path $MsiPath
-
-    Write-Verbose "Extracting the contents of $MsiPath to $TargetDirectory"
-    Start-Process "msiexec.exe" -ArgumentList "/a $MsiPath /qn TARGETDIR=$TargetDirectory" -Wait -NoNewWindow
 }
 
 Write-Host "Removing IE restrictions..."
@@ -123,7 +102,7 @@ Write-Host "Setting up gamepad support..." -ForegroundColor Green
 GetFile "http://www.download.windowsupdate.com/msdownload/update/v3-19990518/cabpool/2060_8edb3031ef495d4e4247e51dcb11bef24d2c4da7.cab" "$specialFolder\Drivers\xbox360.cab" "Xbox 360 Driver"
 GetFile "https://github.com/ViGEm/ViGEmBus/releases/latest/download/ViGEmBusSetup_x64.msi" "$specialFolder\Drivers\vigembus.msi" "VIGEMBUS Driver"
 cmd.exe /c "C:\Windows\System32\expand.exe C:\cloudopenstream\Drivers\xbox360.cab -F:* C:\cloudopenstream\Drivers\" | Out-Null
-Export-MsiContents -MsiPath C:\cloudopenstream\Drivers\vigembus.msi -Verbose
+Start-Process "MSIEXEC" -ArgumentList "/a $MsiPath /qn TARGETDIR=$TargetDirectory" -Wait -NoNewWindow
 Start-Process -FilePath "C:\cloudopenstream\Drivers\vigembus\10\x64\devcon.exe" -ArgumentList '/r disable "HDAUDIO\FUNC_01&VEN_10DE&DEV_0083&SUBSYS_10DE11A3*"'
 Write-Host "Setup for Sunshine has completed!" -ForegroundColor Green
 } 

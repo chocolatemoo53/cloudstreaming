@@ -101,7 +101,7 @@ GetFile "http://www.download.windowsupdate.com/msdownload/update/v3-19990518/cab
 cmd.exe /c "C:\Windows\System32\expand.exe C:\cloudopenstream\Drivers\xbox360.cab -F:* C:\cloudopenstream\Drivers\" | Out-Null
 Copy-Item -Path $WorkDir -Destination $specialFolder -Recurse
 cmd.exe /c '"C:\cloudopenstream\devcon.exe" dp_add "C:\cloudopenstream\Drivers\xusb21.inf"' | Out-Null
-Start-Process -FilePath C:\cloudopenstream\ -ArgumentList '/r disable "HDAUDIO\FUNC_01&VEN_10DE&DEV_0083&SUBSYS_10DE11A3*"'
+Start-Process -FilePath C:\cloudopenstream\devcon.exe -ArgumentList '/r disable "HDAUDIO\FUNC_01&VEN_10DE&DEV_0083&SUBSYS_10DE11A3*"'
 Write-Host "Setup for Sunshine has completed!" -ForegroundColor Green
 } 
 

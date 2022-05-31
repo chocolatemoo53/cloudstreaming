@@ -60,6 +60,13 @@ $principal = New-ScheduledTaskPrincipal -GroupId "BUILTIN\Administrators" -RunLe
 Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "StartSunshine" -Principal $principal -Description "Runs Sunshine at startup" | Out-Null
 }
 
+#   Install 7zip module 
+
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
+Set-PSRepository -Name 'PSGallery' -SourceLocation "https://www.powershellgallery.com/api/v2" -InstallationPolicy Trusted
+Install-Module -Name 7Zip4PowerShell -Force
+
 Write-Host ""
 Write-Host "Please choose a username and password to configure Sunshine..."
 $NewUsername = Read-Host "Username"
@@ -100,9 +107,10 @@ Write-Host "Setting up gamepad support..." -ForegroundColor Green
 GetFile "http://www.download.windowsupdate.com/msdownload/update/v3-19990518/cabpool/2060_8edb3031ef495d4e4247e51dcb11bef24d2c4da7.cab" "$specialFolder\Drivers\xbox360.cab" "Xbox 360 Driver"
 GetFile "https://github.com/ViGEm/ViGEmBus/releases/latest/download/ViGEmBusSetup_x64.msi" "$specialFolder\Drivers\vigembus.msi" "VIGEMBUS Driver"
 cmd.exe /c "C:\Windows\System32\expand.exe C:\cloudopenstream\Drivers\xbox360.cab -F:* C:\cloudopenstream\Drivers\" | Out-Null
-Start-Process -FilePath "msiexec.exe" -Wait -ArgumentList '/a c:\cloudopenstream\Drivers\vigembus.msi /qb TARGETDIR=C:\cloudopenstream\Drivers\'
-cmd.exe /c '"C:\cloudopenstream\Drivers\10\x64\devcon.exe" dp_add "C:\cloudopenstream\Driversxusb21.inf"' | Out-Null
-Start-Process -FilePath "C:\cloudopenstream\Drivers\10\x64\devcon.exe" -ArgumentList '/r disable "HDAUDIO\FUNC_01&VEN_10DE&DEV_0083&SUBSYS_10DE11A3*"'
+$sourcefile = "c:\cloudopenstream\Drivers\vigembus.msi"
+Expand-7Zip -ArchiveFileName $sourcefile -TargetPath 'C:\cloudopenstream\Drivers'
+cmd.exe /c '"C:\cloudopenstream\Drivers\vigembus\10\x64\devcon.exe" dp_add "C:\cloudopenstream\Driversxusb21.inf"' | Out-Null
+Start-Process -FilePath "C:\cloudopenstream\Drivers\vigembus\10\x64\devcon.exe" -ArgumentList '/r disable "HDAUDIO\FUNC_01&VEN_10DE&DEV_0083&SUBSYS_10DE11A3*"'
 Write-Host "Setup for Sunshine has completed!" -ForegroundColor Green
 } 
 

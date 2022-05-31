@@ -91,12 +91,9 @@ $InstallEpic = (Read-Host "Would you like to download and install Epic Games? (y
 
 if($InstallEpic) {
     Write-Host ""
-    GetFile "https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncherInstaller.msi" "$path\Installers\epic.msi" "Epic Games"
+    GetFile "https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncherInstaller.msi" "$specialFolder\Installers\epic.msi" "Epic Games"
     Write-Host "Installing Epic Games..."
     Start-Process -FilePath "msiexec.exe" -Wait -ArgumentList '/qn /i C:\cloudopenstream\Installers\epic.msi'
-    Write-Host ""
-    Write-Host "Removing temporary folder from the desktop..."
-    Remove-Item -Path $path\EpicTemp -force -Recurse | Out-Null
 }
 else {
     Write-Host ""

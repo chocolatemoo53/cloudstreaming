@@ -30,7 +30,6 @@ if(!$RebootSkip) {
     New-Item -Path C:\cloudopenstream\Installers -ItemType directory | Out-Null
     New-Item -Path C:\cloudopenstream\Drivers -ItemType directory | Out-Null
     Write-Host "Your machine will restart at least once during this setup!" -ForegroundColor Red
-    Write-Host "If you want to skip this, use the -RebootSkip switch." -ForegroundColor Red
     Write-Host ""
     Write-Host "Step 1 - Installing required software" -ForegroundColor Yellow
     & $PSScriptRoot\Steps\step1.ps1 -Main

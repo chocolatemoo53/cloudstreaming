@@ -96,14 +96,12 @@ $Shortcut.Save()
 Write-Host "Adding Sunshine rules to Windows Firewall..."
 New-NetFirewallRule -DisplayName "Sunshine/Moonlight TCP" -Direction inbound -LocalPort 47984,47989,48010,47990 -Protocol TCP -Action Allow | Out-Null
 New-NetFirewallRule -DisplayName "Sunshine/Moonlight UDP" -Direction inbound -LocalPort 47998,47999,48000,48010,47990 -Protocol UDP -Action Allow | Out-Null
-Write-Host "Installing the Xbox 360 driver for Sunshine..." -ForegroundColor Green
-GetFile "http://web.archive.org/web/20200425215425/http://download.microsoft.com/download/6/9/4/69446ACF-E625-4CCF-8F56-58B589934CD3/Xbox360_64Eng.exe" "$specialFolder\Drivers\xbox360.exe" "Xbox 360 Driver"
-Write-Host "Installing Xbox 360 Driver..."
-Start-Process -FilePath "$specialFolder\Drivers\xbox360.exe" -Wait -NoNewWindow -Passthru
-Write-Host "Installing the gamepad driver for Sunshine..." -ForegroundColor Green
-GetFile "https://github.com/ViGEm/ViGEmBus/releases/latest/download/ViGEmBusSetup_x64.msi" "$specialFolder\Drivers\vigembus.msi" "Gamepad Driver"
-Write-Host "Installing Gamepad Driver..."
-Start-Process -FilePath "msiexec.exe" -Wait -ArgumentList '/qn /i C:\cloudopenstream\Drivers\vigembus.msi'
+Write-Host "Setting up gamepad support..." -ForegroundColor Green
+GetFile "http://www.download.windowsupdate.com/msdownload/update/v3-19990518/cabpool/2060_8edb3031ef495d4e4247e51dcb11bef24d2c4da7.cab" "$specialFolder\Drivers\xbox360.cab" "Xbox 360 Driver"
+GetFile "https://github.com/ViGEm/ViGEmBus/releases/latest/download/ViGEmBusSetup_x64.msi" "$specialFolder\Drivers\vigembus.msi" "VIGEMBUS Driver"
+cmd.exe /c "C:\Windows\System32\expand.exe C:\cloudopenstream\Drivers\xbox360.cab -F:* C:\cloudopenstream\Drivers\" | Out-Null
+cmd.exe /c "C:\Windows\System32\expand.exe C:\cloudopenstream\Drivers\vigembus.msi -F:* C:\cloudopenstream\Drivers\" | Out-Null
+cmd.exe /c '"C:\cloudopenstream\10\x64\devcon.exe" dp_add "C:\cloudopenstream\Driversxusb21.inf"' | Out-Null
 Write-Host "Setup for Sunshine has completed!" -ForegroundColor Green
 } 
 
@@ -122,7 +120,6 @@ if ($streamTech -eq 3) {
 $Audio = (Read-Host "Would you like to download audio drivers for Sunshine? (y/n)").ToLower() -eq "y"
 if($Audio) { 
 GetFile "https://download.vb-audio.com/Download_CABLE/VBCABLE_Driver_Pack43.zip" "$WorkDir\vbcable.zip" "VBCABLE"
-New-Item -Path C:\cloudopenstream -ItemType directory | Out-Null
 Write-Host "Installing VBCABLE..."
 Expand-Archive -Path "$WorkDir\vbcable.zip" -DestinationPath "$WorkDir\vbcable"
 (Get-AuthenticodeSignature -FilePath "$WorkDir\vbcable\vbaudio_cable64_win7.cat").SignerCertificate | Export-Certificate -Type CERT -FilePath "c:\cloudopenstream\vbcable.cer" | Out-Null

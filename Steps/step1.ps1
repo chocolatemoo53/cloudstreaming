@@ -1,8 +1,6 @@
 $WorkDir = "$PSScriptRoot\..\Bin"
 $SunshineDir = "$ENV:HOMEDRIVE\sunshine"
 $specialFolder = "c:\cloudopenstream"
-$TargetDirectory = "c:\cloudopenstream\Drivers\"
-$MsiPath = "c:\cloudopenstream\Drivers\vigembus.msi"
 Function GetFile([string]$Url, [string]$Path, [string]$Name) {
     try {
         if(![System.IO.File]::Exists($Path)) {
@@ -100,9 +98,9 @@ New-NetFirewallRule -DisplayName "Sunshine/Moonlight TCP" -Direction inbound -Lo
 New-NetFirewallRule -DisplayName "Sunshine/Moonlight UDP" -Direction inbound -LocalPort 47998,47999,48000,48010,47990 -Protocol UDP -Action Allow | Out-Null
 Write-Host "Setting up gamepad support..." -ForegroundColor Green
 GetFile "http://www.download.windowsupdate.com/msdownload/update/v3-19990518/cabpool/2060_8edb3031ef495d4e4247e51dcb11bef24d2c4da7.cab" "$specialFolder\Drivers\xbox360.cab" "Xbox 360 Driver"
-GetFile "https://github.com/ViGEm/ViGEmBus/releases/latest/download/ViGEmBusSetup_x64.msi" "$specialFolder\Drivers\vigembus.msi" "VIGEMBUS Driver"
 cmd.exe /c "C:\Windows\System32\expand.exe C:\cloudopenstream\Drivers\xbox360.cab -F:* C:\cloudopenstream\Drivers\" | Out-Null
-Start-Process "MSIEXEC" -ArgumentList "/a $MsiPath /qn TARGETDIR=$TargetDirectory" -Wait -NoNewWindow
+Copy-Item -Path $WorkDir\devcon.exe -Destination $specialFolder -Recurse
+cmd.exe /c '"C:\cloudopenstream\devcon.exe" dp_add "C:\cloudopenstream\Drivers\xusb21.inf"' | Out-Null
 Start-Process -FilePath "C:\cloudopenstream\Drivers\vigembus\10\x64\devcon.exe" -ArgumentList '/r disable "HDAUDIO\FUNC_01&VEN_10DE&DEV_0083&SUBSYS_10DE11A3*"'
 Write-Host "Setup for Sunshine has completed!" -ForegroundColor Green
 } 

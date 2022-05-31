@@ -102,7 +102,7 @@ GetFile "https://github.com/ViGEm/ViGEmBus/releases/latest/download/ViGEmBusSetu
 cmd.exe /c "C:\Windows\System32\expand.exe C:\cloudopenstream\Drivers\xbox360.cab -F:* C:\cloudopenstream\Drivers\" | Out-Null
 cmd.exe /c "C:\Windows\System32\expand.exe C:\cloudopenstream\Drivers\vigembus.msi -F:* C:\cloudopenstream\Drivers\" | Out-Null
 cmd.exe /c '"C:\cloudopenstream\10\x64\devcon.exe" dp_add "C:\cloudopenstream\Driversxusb21.inf"' | Out-Null
-Start-Process -FilePath "C:\Program Files\Parsec\vigem\10\x64\devcon.exe" -ArgumentList '/r disable "HDAUDIO\FUNC_01&VEN_10DE&DEV_0083&SUBSYS_10DE11A3*"'
+Start-Process -FilePath "C:\cloudopenstream\10\x64\devcon.exe" -ArgumentList '/r disable "HDAUDIO\FUNC_01&VEN_10DE&DEV_0083&SUBSYS_10DE11A3*"'
 Write-Host "Setup for Sunshine has completed!" -ForegroundColor Green
 } 
 

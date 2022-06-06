@@ -37,7 +37,7 @@ if ($streamTech -eq 1) {
     Write-Host ""
     GetFile "https://builds.parsecgaming.com/package/parsec-windows.exe" "$WorkDir\parsec.exe" "Parsec"
     Write-Host "Installing Parsec..."
-    Start-Process -FilePath "$WorkDir\parsec.exe" -ArgumentList "/S" -NoNewWindow -Wait -Passthru
+    Start-Process -FilePath "$WorkDir\parsec.exe" -ArgumentList "/norun /silent" -NoNewWindow -Wait -Passthru
 }
 
 if ($streamTech -eq 2) {

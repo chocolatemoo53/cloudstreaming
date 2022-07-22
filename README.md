@@ -11,14 +11,14 @@ As quoted from the Wiki:
 
 This step also installs essential drivers for audio and video. Please check the official GitHub repo for the Parsec GPU Updater to [see if your GPU is compatible](https://github.com/parsec-cloud/Cloud-GPU-Updater). For audio, the driver is a free piece of software called "VBCable" downloaded from the official source. 
 
-All other steps are explained in details by reading the Wiki. 
+All other steps are explained in detail inside the GitHub Wiki. 
 
 ## Streaming technology
 Streaming technology refers to what you prefer to stream your server instance to your local computer. This depends on your setup and needs. A summary of the differences between the technologies provided in the script are that Parsec and NiceDCV are closed sourced, while Sunshine is open-source. Also, NiceDCV is exclusively for AWS customers unless you have a license. **If you're looking to use Moonlight with your incompatible server GPU, like the Tesla T4, then choose Sunshine.**
 
 ### Thank you to: 
-| Team or Person  | GitHub                            | Project                                                                |
-|-----------------|-----------------------------------|------------------------------------------------------------------------|
-| loki-47-6F-64   | https://github.com/loki-47-6F-64/ | https://github.com/loki-47-6F-64/sunshine                              |
-| The Parsec Team | https://github.com/parsec-cloud   | https://github.com/parsec-cloud/Cloud-GPU-Updater / https://parsec.app |
-| NiceDCV/AWS     | https://github.com/aws            | https://aws.amazon.com/hpc/dcv/                                        |
+| Team or Person  | GitHub                             | Project                                                                |
+|-----------------|------------------------------------|------------------------------------------------------------------------|
+| SunshineStream  | https://github.com/SunshineStream/ | https://github.com/SunshineStream/Sunshine                             |
+| The Parsec Team | https://github.com/parsec-cloud    | https://github.com/parsec-cloud/Cloud-GPU-Updater / https://parsec.app |
+| NiceDCV/AWS     | https://github.com/aws             | https://aws.amazon.com/hpc/dcv/                                        |

@@ -3,8 +3,6 @@ name: Bug report
 about: If you encountered an error while using the script
 title: "[SCRIPT ERROR]"
 labels: bug
-assignees: chocolatemoo53
-
 ---
 
 **Describe the bug**

@@ -48,7 +48,7 @@ if ($streamTech -eq 2) {
 }
 
 if ($streamTech -eq 3) {
-GetFile "https://github.com/SunshineStream/Sunshine/releases/latest/download/Sunshine-Windows.zip" "$WorkDir\Sunshine-Windows.zip" "Sunshine"
+GetFile "https://github.com/LizardByte/Sunshine/releases/latest/download/Sunshine-Windows.zip" "$WorkDir\Sunshine-Windows.zip" "Sunshine"
 Expand-Archive -Path "$WorkDir\Sunshine-Windows.zip" -DestinationPath "$SunshineDir" -Force
 Write-Host ""
 Write-Host "Making sure Sunshine begins at startup..." -ForegroundColor Yellow

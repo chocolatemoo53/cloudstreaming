@@ -100,15 +100,15 @@ else {
     Write-Host "Skipping Epic Games..."
 }
 
-$InstallUplay = (Read-Host "Would you like to install UPlay? (y/n)").ToLower() -eq "y"
+$InstallUplay = (Read-Host "Would you like to install Ubisoft Connect? (y/n)").ToLower() -eq "y"
 
 if($InstallUplay) {
     Write-Host ""
-    GetFile "https://ubistatic3-a.akamaihd.net/orbit/launcher_installer/UplayInstaller.exe" "$WorkDir\uplay.exe" "UPlay"
-    Write-Host "Installing UPlay..."
-    Start-Process -FilePath "$WorkDir\uplay.exe" -ArgumentList "/S" -NoNewWindow -Wait -PassThru
+    GetFile "https://ubi.li/4vxt9" "$WorkDir\ubisoftconnect.exe" "Ubisoft Connect"
+    Write-Host "Installing Ubisoft Connect..."
+    Start-Process -FilePath "$WorkDir\ubisoftconnect.exe" -ArgumentList "/S" -NoNewWindow -Wait -PassThru
 }
 else {
     Write-Host ""
-    Write-Host "Skipping UPlay..."
+    Write-Host "Skipping Ubisoft Connect..."
 }

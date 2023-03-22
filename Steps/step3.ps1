@@ -1,5 +1,5 @@
 $WorkDir = "$PSScriptRoot\..\Bin"
-$specialFolder = "C:\cloudopenstream"
+$specialFolder = "C:\cloudstreaming"
 Function GetFile([string]$Url, [string]$Path, [string]$Name) {
     try {
         if(![System.IO.File]::Exists($Path)) {
@@ -22,7 +22,7 @@ if($InstallFirefox) {
     Write-Host ""
     GetFile "https://download.mozilla.org/?product=firefox-msi-latest-ssl&os=win64&lang=en-US" "$specialFolder\Installers\firefox.msi" "Firefox" 
     Write-Host "Installing Firefox..."
-    Start-Process -FilePath "msiexec.exe" -Wait -ArgumentList '/q /i C:\cloudopenstream\Installers\firefox.msi'
+    Start-Process -FilePath "msiexec.exe" -Wait -ArgumentList '/q /i C:\cloudstreaming\Installers\firefox.msi'
     Write-Host ""
 }
 else {
@@ -36,7 +36,7 @@ if($InstallEdge) {
     Write-Host ""
     GetFile "https://msedge.sf.dl.delivery.mp.microsoft.com/filestreamingservice/files/deca85f5-369c-4c01-933d-f1b544563b31/MicrosoftEdgeEnterpriseX64.msi" "$specialFolder\Installers\edge.msi" "Firefox" 
     Write-Host "Installing Microsoft Edge..."
-    Start-Process -FilePath "msiexec.exe" -Wait -ArgumentList '/qn /i C:\cloudopenstream\Installers\edge.msi'
+    Start-Process -FilePath "msiexec.exe" -Wait -ArgumentList '/qn /i C:\cloudstreaming\Installers\edge.msi'
     Write-Host ""
 }
 else {
@@ -50,7 +50,7 @@ if($InstallChrome) {
     Write-Host ""
     GetFile "https://dl.google.com/tag/s/dl/chrome/install/googlechromestandaloneenterprise64.msi" "$specialFolder\Installers\chrome.msi" "Google Chrome" 
     Write-Host "Installing Google Chrome..."
-    Start-Process -FilePath "msiexec.exe" -Wait -ArgumentList '/qn /i C:\cloudopenstream\Installers\chrome.msi'
+    Start-Process -FilePath "msiexec.exe" -Wait -ArgumentList '/qn /i C:\cloudstreaming\Installers\chrome.msi'
     Write-Host ""
 }
 else {
@@ -93,7 +93,7 @@ if($InstallEpic) {
     Write-Host ""
     GetFile "https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncherInstaller.msi" "$specialFolder\Installers\epic.msi" "Epic Games"
     Write-Host "Installing Epic Games..."
-    Start-Process -FilePath "msiexec.exe" -Wait -ArgumentList '/qn /i C:\cloudopenstream\Installers\epic.msi'
+    Start-Process -FilePath "msiexec.exe" -Wait -ArgumentList '/qn /i C:\cloudstreaming\Installers\epic.msi'
 }
 else {
     Write-Host ""

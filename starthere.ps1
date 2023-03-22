@@ -1,5 +1,5 @@
 Param([Parameter(Mandatory=$false)] [Switch]$RebootSkip)
-$host.ui.RawUI.WindowTitle = "cloudopenstream"
+$host.ui.RawUI.WindowTitle = "cloudstreaming"
 Start-Transcript -Path "$PSScriptRoot\Log.txt"
 function Elevated {
     $id = [System.Security.Principal.WindowsIdentity]::GetCurrent()
@@ -26,9 +26,9 @@ Write-Host ""
 
 if(!$RebootSkip) {
     Write-Host "Creating a special directory for this script to use..." -ForegroundColor Yellow
-    New-Item -Path C:\cloudopenstream -ItemType directory | Out-Null
-    New-Item -Path C:\cloudopenstream\Installers -ItemType directory | Out-Null
-    New-Item -Path C:\cloudopenstream\Drivers -ItemType directory | Out-Null
+    New-Item -Path C:\cloudstreaming -ItemType directory | Out-Null
+    New-Item -Path C:\cloudstreaming\Installers -ItemType directory | Out-Null
+    New-Item -Path C:\cloudstreaming\Drivers -ItemType directory | Out-Null
     Write-Host "Your machine will restart at least once during this setup!" -ForegroundColor Red
     Write-Host ""
     Write-Host "Step 1 - Installing required software" -ForegroundColor Yellow

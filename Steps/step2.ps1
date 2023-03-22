@@ -1,6 +1,6 @@
 $osType = Get-CimInstance -ClassName Win32_OperatingSystem
 $WorkDir = "$PSScriptRoot\..\Bin"
-$specialFolder = "c:\cloudopenstream"
+$specialFolder = "c:\cloudstreaming"
 Function GetFile([string]$Url, [string]$Path, [string]$Name) {
     try {
         if(![System.IO.File]::Exists($Path)) {
@@ -71,7 +71,7 @@ GetFile "https://cdn.wallpaperhub.app/cloudcache/7/c/2/f/3/4/7c2f345bdfcadb8a3fa
 Move-Item -Path "$WorkDir\wallpaper.jpg" -Destination "$specialfolder\wallpaper.jpg"
 Write-Host "Setting the wallpaper..."
 New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies" -Name "System" | Out-Null
-New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name Wallpaper -value "c:\cloudopenstream\wallpaper.jpg" | Out-Null
+New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name Wallpaper -value "c:\cloudstreaming\wallpaper.jpg" | Out-Null
 New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name WallpaperStyle -value 2 | Out-Null
 Stop-Process -Name Explorer -Force
 }	

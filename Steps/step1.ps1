@@ -100,8 +100,6 @@ Write-Host "Setting up gamepad support..." -ForegroundColor Green
 GetFile "http://www.download.windowsupdate.com/msdownload/update/v3-19990518/cabpool/2060_8edb3031ef495d4e4247e51dcb11bef24d2c4da7.cab" "$specialFolder\Drivers\xbox360.cab" "Xbox 360 Driver"
 cmd.exe /c "C:\Windows\System32\expand.exe C:\cloudstreaming\Drivers\xbox360.cab -F:* C:\cloudstreaming\Drivers\" | Out-Null
 cmd.exe /c 'C:\cloudstreaming\Drivers\xusb21.inf' | Out-Null
-GetFile "https://github.com/ViGEm/ViGEmBus/releases/latest/download/ViGEmBusSetup_x64.msi" "$specialFolder\Drivers\vigembus.msi" "ViGEmBus Driver"
-Start-Process -FilePath "msiexec.exe" -Wait -ArgumentList '/qn /i C:\cloudstreaming\Drivers\vigembus.msi'
 Write-Host "Setup for Sunshine has completed!" -ForegroundColor Green
 } 
 

@@ -3,24 +3,16 @@ Hello there, thanks for visiting. This is a GitHub repo containing PowerShell sc
 
 To learn more about the script including how to use the script in specific use cases, please visit the official Wiki located [here](https://github.com/nonsensemaker/cloudstreaming/wiki). If you ever need help, please [submit an issue](https://github.com/nonsensemaker/cloudstreaming/issues) to GitHub. I can follow up on any question that you may have. The wiki also has step-by-steps guides for some cloud providers to get up and running!
 
-To explain how it all works, let's start with the initiator script (`starthere.ps1`), this script checks the server for compatibility. For example, the script needs to run on the BUILT-IN (or not) Administrator. This user is activated by default on most cloud providers and is most likely the user you are using to log in to the server. Afterward, it seemlessly begins the next step, that being step one. 
+To explain how it all works, let's start with the initiator script (`starthere.ps1`), this script checks the server for compatibility. For example, the script needs to run with an Administrator account. This user is activated by default on most cloud providers and is most likely the user you are using to log in to the server. Afterward, it seemlessly begins the next step, that being step one. 
 
-If you just want to get audio/video drivers, only need the apps, or the various fixes, each step is completely independent from one another. Just click the step you want to start and use it. 
+If you just want to get audio/video drivers, only need the apps, or the various fixes, each step is completely independent from one another. Just click the step you want to start and use it.  
 
-As quoted from the Wiki:
-
-"Step one is not very complicated, it uses some basic code to download then install a file from the internet..."
-
-This step also installs essential drivers for audio and video. Please check the official GitHub repo for the Parsec GPU Updater to [see if your GPU is compatible](https://github.com/parsec-cloud/Cloud-GPU-Updater). For audio, the driver is a free piece of software called "VBCable" downloaded from the official source. 
-
-All other steps are explained in detail inside the GitHub Wiki. 
-
-## Streaming technology
-Streaming technology refers to what you prefer to stream your server instance to your local computer. This depends on your setup and needs. A summary of the differences between the technologies provided in the script are that Parsec and NiceDCV are closed sourced, while Sunshine is open-source. Also, NiceDCV is exclusively for AWS customers unless you have a license. **If you're looking to use Moonlight with your incompatible server GPU, like the Tesla T4, then choose Sunshine.**
+## A note on "streaming technology"
+Streaming technology refers to what you prefer to stream your server instance to your local computer. This depends on your setup and needs. A summary of the differences between the technologies provided in the script is available in the wiki. Also, NiceDCV is exclusively for AWS customers unless you have a license. **If you're looking to use Moonlight with your incompatible server GPU, like the Tesla T4, then choose Sunshine.**
 
 ### Thank you to: 
 | Team or Person  | GitHub                             | Project                                                                |
 |-----------------|------------------------------------|------------------------------------------------------------------------|
-| SunshineStream  | https://github.com/SunshineStream/ | https://github.com/SunshineStream/Sunshine                             |
+| LizardByte      | https://github.com/LizardByte/     | https://github.com/LizardByte/Sunshine/releases                        |
 | The Parsec Team | https://github.com/parsec-cloud    | https://github.com/parsec-cloud/Cloud-GPU-Updater / https://parsec.app |
 | NiceDCV/AWS     | https://github.com/aws             | https://aws.amazon.com/hpc/dcv/                                        |

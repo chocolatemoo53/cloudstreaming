@@ -18,7 +18,6 @@ Write-Host "If you are not running Windows Server, a portion of this step is ski
 
 if($osType.ProductType -eq 3) {
 Write-Host "Applying general fixes..."
-Set-Itemproperty -Path 'HKCU:\Control Panel\Mouse' -Name MouseSpeed -Value 1 | Out-Null
 Enable-MMAgent -MemoryCompression | Out-Null
 New-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Control" -Name "ServicesPipeTimeout" -Value 600000 -PropertyType "DWord" | Out-Null
 Set-Service -Name Audiosrv -StartupType Automatic | Out-Null

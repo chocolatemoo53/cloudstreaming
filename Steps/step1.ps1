@@ -1,3 +1,4 @@
+$osType = Get-CimInstance -ClassName Win32_OperatingSystem
 $WorkDir = "$PSScriptRoot\..\Bin"
 $SunshineDir = "$ENV:HOMEDRIVE\sunshine"
 $specialFolder = "c:\cloudstreaming"
@@ -12,18 +13,11 @@ Function GetFile([string]$Url, [string]$Path, [string]$Name) {
     }
 }
 
+if($osType.ProductType -eq 3) {
 Write-Host "Removing IE restrictions..."
 Set-Itemproperty "HKLM:\SOFTWARE\Microsoft\Active Setup\Installed Components\{A509B1A7-37EF-4b3f-8CFC-4F3A74704073}" -name IsInstalled -value 0 -force | Out-Null
 Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Active Setup\Installed Components\{A509B1A8-37EF-4b3f-8CFC-4F3A74704073}" -Name IsInstalled -Value 0 -Force | Out-Null
 Stop-Process -Name Explorer -Force
-
-GetFile "https://aka.ms/vs/16/release/vc_redist.x64.exe" "$WorkDir\redist.exe" "Visual C++ Redist (2015-19)"
-Write-Host "Installing Visual C++ Redist (2015-19)..."
-$ExitCode = (Start-Process -FilePath "$WorkDir\redist.exe" -ArgumentList "/install","/quiet","/norestart" -NoNewWindow -Wait -Passthru).ExitCode
-if($ExitCode -eq 0) { Write-Host "Installed." -ForegroundColor Green }
-elseif($ExitCode -eq 1638) { Write-Host "Newer version already installed." -ForegroundColor Green }
-else { 
-    throw "Installation failed (Error: $ExitCode)."
 }
 
     Write-Host "Choose your streaming technology"

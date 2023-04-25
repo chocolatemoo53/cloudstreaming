@@ -100,9 +100,9 @@ else {
     Write-Host "Skipping Epic Games..."
 }
 
-$InstallUplay = (Read-Host "Would you like to install Ubisoft Connect? (y/n)").ToLower() -eq "y"
+$InstallUbisoftConnect = (Read-Host "Would you like to install Ubisoft Connect? (y/n)").ToLower() -eq "y"
 
-if($InstallUplay) {
+if($InstallUbisoftConnect) {
     Write-Host ""
     GetFile "https://ubi.li/4vxt9" "$WorkDir\ubisoftconnect.exe" "Ubisoft Connect"
     Write-Host "Installing Ubisoft Connect..."

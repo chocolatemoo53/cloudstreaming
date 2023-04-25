@@ -14,4 +14,5 @@ Streaming technology refers to what you prefer to stream your server instance to
 | LizardByte      | https://github.com/LizardByte/     | https://github.com/LizardByte/Sunshine/releases                        |
 | The Parsec Team | https://github.com/parsec-cloud    | https://github.com/parsec-cloud/Cloud-GPU-Updater / https://parsec.app |
 | NiceDCV/AWS     | https://github.com/aws             | https://aws.amazon.com/hpc/dcv/                                        |
-| Acceleration3   | https://github.com/acceleration3   | https://github.com/acceleration3/cloudgamestream                       |
+| acceleration3   | https://github.com/acceleration3   | https://github.com/acceleration3/cloudgamestream                       |
+| tomgrice        | https://github.com/tomgrice        | https://github.com/tomgrice/cloudgamestream-sunshine                   |

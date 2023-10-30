@@ -29,28 +29,29 @@ if(!$RebootSkip) {
     New-Item -Path C:\cloudstreaming -ItemType directory | Out-Null
     New-Item -Path C:\cloudstreaming\Installers -ItemType directory | Out-Null
     New-Item -Path C:\cloudstreaming\Drivers -ItemType directory | Out-Null
-    Write-Host "Your machine will restart at least once during this setup!" -ForegroundColor Red
-    Write-Host ""
-    Write-Host "Step 1 - Installing required software" -ForegroundColor Yellow
+    Write-Host "Your machine may restart at least once during this setup!" -ForegroundColor Red
+    Write-Host "Your setup time may vary..." -ForegroundColor Red
+    Write-Host "Step 1 - Installing required software..." -ForegroundColor Yellow
     & $PSScriptRoot\Steps\step1.ps1 -Main
 } else {
 if(Get-ScheduledTask | Where-Object {$_.TaskName -like "Continue" }) {
   Unregister-ScheduledTask -TaskName "Continue" -Confirm:$false
 }
-Write-Host "Welcome back, let's continue with step two."
+Write-Host "Welcome back, let's continue with step two!"
 }
 	
     Write-Host ""
-    Write-Host "Step 2 - Applying fixes" -ForegroundColor Yellow
+    Write-Host "Step 2 - Applying fixes..." -ForegroundColor Yellow
     & $PSScriptRoot\Steps\step2.ps1
 
     Write-Host ""
-    Write-Host "Step 3 - Installing extra applications" -ForegroundColor Yellow
+    Write-Host "Step 3 - Installing extra applications..." -ForegroundColor Yellow
     & $PSScriptRoot\Steps\step3.ps1
     	
 	Write-Host ""
 	$ip = (Invoke-WebRequest ifconfig.me/ip).Content
 	Write-Host "Your IP address is $ip" -ForegroundColor Red
+  Write-Host "Use this IP address in Moonlight or NiceDCV, setup dynamic DNS if this a temporary address." -ForegroundColor Red
 	Write-Host "If you liked the script, please star it on GitHub!" -ForegroundColor Green
 	
     $restart = (Read-Host "It is recommenended to restart your server. Restart now? (y/n)").ToLower();

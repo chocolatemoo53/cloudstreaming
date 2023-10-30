@@ -24,6 +24,7 @@ Stop-Process -Name Explorer -Force
     Write-Host "1. Parsec (Best for most people)"
     Write-Host "2. NiceDCV (For AWS customers)"
     Write-Host "3. Sunshine (For use with Moonlight)"
+    Write-Host "Consult the wiki for more information"
 
 $streamTech = Read-Host -Prompt 'Type the number corresponding your choice'
 
@@ -42,59 +43,12 @@ if ($streamTech -eq 2) {
 }
 
 if ($streamTech -eq 3) {
-GetFile "https://github.com/LizardByte/Sunshine/releases/latest/download/sunshine-windows-portable.zip" "$WorkDir\Sunshine-Windows.zip" "Sunshine"
-Expand-Archive -Path "$WorkDir\Sunshine-Windows.zip" -DestinationPath "$SunshineDir" -Force
-Write-Host ""
-Write-Host "Making sure Sunshine begins at startup..." -ForegroundColor Yellow
-
-if (!(Get-ScheduledTask -TaskName "StartSunshine" -ErrorAction SilentlyContinue)) {
-$action = New-ScheduledTaskAction -Execute "cmd.exe" -Argument "/c start /min sunshine.exe" -WorkingDirectory "$SunshineDir"
-$trigger = New-ScheduledTaskTrigger -AtLogon -RandomDelay "00:00:20"
-$principal = New-ScheduledTaskPrincipal -GroupId "BUILTIN\Administrators" -RunLevel Highest
-Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "StartSunshine" -Principal $principal -Description "Runs Sunshine at startup" | Out-Null
-}
-
-Write-Host ""
-Write-Host "Please choose a username and password to configure Sunshine..."
-$NewUsername = Read-Host "Username"
-$NewPassword = Read-Host "Password" -AsSecureString
-$NewPassword = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($NewPassword))
-$NewSalt = (([char[]]([char]'a'..[char]'z') + 0..9 | Sort-Object {get-random})[0..16] -join '')
-$NewHash = $NewPassword + $NewSalt
-$NewHash = new-object System.Security.Cryptography.SHA256Managed | ForEach-Object {$_.ComputeHash([System.Text.Encoding]::UTF8.GetBytes("$NewHash"))} | ForEach-Object {$_.ToString("x2")}
-[array]::Reverse($NewHash)
-$NewHash = ($NewHash -join '').ToUpper()
-@{username="$NewUsername";salt="$NewSalt";password="$NewHash"} | ConvertTo-Json | Out-File "$SunshineDir\sunshine_state.json" -Encoding ascii
-Start-Process -FilePath "$SunshineDir\sunshine.exe"
-Write-Host ""
-Write-Host "Adding Desktop shortcuts..." -ForegroundColor Green
-Copy-Item "$WorkDir\cog.ico" -Destination "$SunshineDir"
-Copy-Item "$WorkDir\sunshine.ico" -Destination "$SunshineDir"
-$TargetFile = "cmd.exe"
-$ShortcutFile = "$env:Public\Desktop\Start Sunshine.lnk"
-$WScriptShell = New-Object -ComObject WScript.Shell
-$Shortcut = $WScriptShell.CreateShortcut($ShortcutFile)
-$Shortcut.TargetPath = $TargetFile
-$Shortcut.Arguments = "/c start sunshine.exe"
-$Shortcut.WorkingDirectory = $SunshineDir
-$Shortcut.IconLocation = "$SunshineDir\sunshine.ico"
-$Shortcut.Save()
-$TargetFile = "$ENV:windir\explorer.exe"
-$ShortcutFile = "$env:Public\Desktop\Sunshine Settings.lnk"
-$WScriptShell = New-Object -ComObject WScript.Shell
-$Shortcut = $WScriptShell.CreateShortcut($ShortcutFile)
-$Shortcut.TargetPath = $TargetFile
-$Shortcut.IconLocation = "$SunshineDir\cog.ico"
-$Shortcut.Arguments = "https://127.0.0.1:47990"
-$Shortcut.Save()
 Write-Host "Adding Sunshine rules to Windows Firewall..."
-New-NetFirewallRule -DisplayName "Sunshine/Moonlight TCP" -Direction inbound -LocalPort 47984,47989,48010,47990 -Protocol TCP -Action Allow | Out-Null
-New-NetFirewallRule -DisplayName "Sunshine/Moonlight UDP" -Direction inbound -LocalPort 47998,47999,48000,48010,47990 -Protocol UDP -Action Allow | Out-Null
-Write-Host "Setting up gamepad support..." -ForegroundColor Green
-GetFile "http://www.download.windowsupdate.com/msdownload/update/v3-19990518/cabpool/2060_8edb3031ef495d4e4247e51dcb11bef24d2c4da7.cab" "$specialFolder\Drivers\xbox360.cab" "Xbox 360 Driver"
-cmd.exe /c "C:\Windows\System32\expand.exe C:\cloudstreaming\Drivers\xbox360.cab -F:* C:\cloudstreaming\Drivers\" | Out-Null
-cmd.exe /c 'C:\cloudstreaming\Drivers\xusb21.inf' | Out-Null
 Write-Host "Setup for Sunshine has completed!" -ForegroundColor Green
+Write-Host ""
+GetFile "https://github.com/LizardByte/Sunshine/Sunshine/releases/latest/download/sunshine-windows-installer.exe" "$WorkDir\sunshine.exe" "Sunshine"
+Write-Host "Installing Sunshine..."
+Start-Process -FilePath "$WorkDir\sunshine.exe" -ArgumentList "/s" -NoNewWindow -Wait -Passthru
 } 
 
 if ($streamTech -eq 1) {
@@ -119,7 +73,7 @@ Import-Certificate -FilePath "C:\cloudstreaming\vbcable.cer" -CertStoreLocation 
 Start-Process -FilePath "$WorkDir\vbcable\VBCABLE_Setup_x64.exe" -ArgumentList "-i","-h" -NoNewWindow -Wait }
 }
 
-$Video = (Read-Host "Would you like to install video drivers? (y/n)").ToLower() -eq "y"
+$Video = (Read-Host "Would you like to install video drivers? (skip if AWS, y/n)").ToLower() -eq "y"
  
 if($Video) {
   $Shell = New-Object -comObject WScript.Shell

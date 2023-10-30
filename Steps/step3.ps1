@@ -13,8 +13,13 @@ Function GetFile([string]$Url, [string]$Path, [string]$Name) {
 
 Import-Module BitsTransfer
 
+Write-Host ""
 Write-Host "All software after this point is optional, it should install silently..."
-Write-Host "Choose your browser(s), or not" -ForegroundColor Green
+Write-Host ""
+Write-Host "Choose your browser..." -ForegroundColor Green
+Write-Host ""
+$InstallBrowsers = (Read-Host "Would you like to download and install web browsers? (y/n)").ToLower() -eq "y"
+if($InstallBrowsers) {
 Write-Host ""
 $InstallFirefox = (Read-Host "Would you like to download and install Mozilla Firefox? (y/n)").ToLower() -eq "y"
 
@@ -28,6 +33,7 @@ if($InstallFirefox) {
 else {
     Write-Host ""
     Write-Host "Skipping Firefox..."
+    Write-Host ""
 }
 
 $InstallEdge = (Read-Host "Would you like to download and install Microsoft Edge? (y/n)").ToLower() -eq "y"
@@ -42,6 +48,8 @@ if($InstallEdge) {
 else {
     Write-Host ""
     Write-Host "Skipping Microsoft Edge..."
+    Write-Host ""
+
 }
 
 $InstallChrome = (Read-Host "Would you like to download and install Google Chrome? (y/n)").ToLower() -eq "y"
@@ -56,27 +64,24 @@ if($InstallChrome) {
 else {
     Write-Host ""
     Write-Host "Skipping Google Chrome..."
-}
-
-$Install7Zip = (Read-Host "Would you like to download and install 7Zip? (y/n)").ToLower() -eq "y"
-
-if($Install7Zip) {
     Write-Host ""
-    GetFile "https://www.7-zip.org/a/7z1900-x64.exe" "$WorkDir\7zip.exe" "7Zip"
-    Write-Host "Installing 7Zip..."
-    Start-Process -FilePath "$WorkDir\7Zip.exe" -ArgumentList "/S" -NoNewWindow -Wait -Passthru
+
+}
 }
 else {
     Write-Host ""
-    Write-Host "Skipping 7Zip..."
+    Write-Host "Skipping browsers..."
+    Write-Host ""
+
 }
 
-Write-Host ""
-Write-Host "Choose your game launchers..." -ForegroundColor Green
-Write-Host ""
-$InstallSteam = (Read-Host "Would you like to download and install Steam? (y/n)").ToLower() -eq "y"
-
-if($InstallSteam) {
+$InstallLaunchers = (Read-Host "Would you like to download and install game launchers? (y/n)").ToLower() -eq "y"
+if($InstallLaunchers) {
+    Write-Host ""
+    Write-Host "Choose your game launchers..." -ForegroundColor Green
+    Write-Host ""
+    $InstallSteam = (Read-Host "Would you like to download and install Steam? (y/n)").ToLower() -eq "y"
+    if($InstallSteam) {
     Write-Host ""
     GetFile "https://cdn.akamai.steamstatic.com/client/installer/SteamSetup.exe" "$WorkDir\SteamSetup.exe" "Steam"
     Write-Host "Installing Steam..."
@@ -85,10 +90,9 @@ if($InstallSteam) {
 else {
     Write-Host ""
     Write-Host "Skipping Steam..."
+    Write-Host ""
 }
-
 $InstallEpic = (Read-Host "Would you like to download and install Epic Games? (y/n)").ToLower() -eq "y"
-
 if($InstallEpic) {
     Write-Host ""
     GetFile "https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncherInstaller.msi" "$specialFolder\Installers\epic.msi" "Epic Games"
@@ -98,17 +102,11 @@ if($InstallEpic) {
 else {
     Write-Host ""
     Write-Host "Skipping Epic Games..."
-}
-
-$InstallUbisoftConnect = (Read-Host "Would you like to install Ubisoft Connect? (y/n)").ToLower() -eq "y"
-
-if($InstallUbisoftConnect) {
     Write-Host ""
-    GetFile "https://ubi.li/4vxt9" "$WorkDir\ubisoftconnect.exe" "Ubisoft Connect"
-    Write-Host "Installing Ubisoft Connect..."
-    Start-Process -FilePath "$WorkDir\ubisoftconnect.exe" -ArgumentList "/S" -NoNewWindow -Wait -PassThru
 }
 else {
     Write-Host ""
-    Write-Host "Skipping Ubisoft Connect..."
+    Write-Host "Skipping game launchers..."
+    Write-Host ""
+}
 }

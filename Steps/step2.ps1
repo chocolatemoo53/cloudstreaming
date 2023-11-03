@@ -70,9 +70,9 @@ Write-Host 'You may be able to remove system info from the desktop by forcing a 
 $setWallpaper = (Read-Host -Prompt 'Would you like to do so? (y/n)').ToLower() -eq "y"
 
 if($setWallpaper) {
-GetFile "https://cdn.wallpaperhub.app/cloudcache/7/c/2/f/3/4/7c2f345bdfcadb8a3faf483ebaa2e9aea712bbdb.jpg" "$WorkDir\wallpaper.jpg" "Default Server 2019 Wallpaper"
+GetFile "https://cdn.wallpaperhub.app/cloudcache/7/c/2/f/3/4/7c2f345bdfcadb8a3faf483ebaa2e9aea712bbdb.jpg" "$WorkDir\wallpaper.jpg" "Default Windows 10 Wallpaper"
 Move-Item -Path "$WorkDir\wallpaper.jpg" -Destination "$specialfolder\wallpaper.jpg"
-Write-Host "Setting the wallpaper..."
+Write-Host "Setting the wallpaper, you can set any wallpaper you like in the cloudstreaming folder..."
 New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies" -Name "System" | Out-Null
 New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name Wallpaper -value "c:\cloudstreaming\wallpaper.jpg" | Out-Null
 New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name WallpaperStyle -value 2 | Out-Null

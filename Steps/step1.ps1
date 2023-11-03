@@ -1,6 +1,5 @@
 $osType = Get-CimInstance -ClassName Win32_OperatingSystem
 $WorkDir = "$PSScriptRoot\..\Bin"
-$SunshineDir = "$ENV:HOMEDRIVE\sunshine"
 $specialFolder = "c:\cloudstreaming"
 Function GetFile([string]$Url, [string]$Path, [string]$Name) {
     try {
@@ -43,10 +42,8 @@ if ($streamTech -eq 2) {
 }
 
 if ($streamTech -eq 3) {
-Write-Host "Adding Sunshine rules to Windows Firewall..."
-Write-Host "Setup for Sunshine has completed!" -ForegroundColor Green
 Write-Host ""
-GetFile "https://github.com/LizardByte/Sunshine/Sunshine/releases/latest/download/sunshine-windows-installer.exe" "$WorkDir\sunshine.exe" "Sunshine"
+GetFile "https://github.com/LizardByte/Sunshine/releases/latest/download/sunshine-windows-installer.exe" "$WorkDir\sunshine.exe" "Sunshine"
 Write-Host "Installing Sunshine..."
 Start-Process -FilePath "$WorkDir\sunshine.exe" -ArgumentList "/s" -NoNewWindow -Wait -Passthru
 } 

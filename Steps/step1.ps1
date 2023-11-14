@@ -1,6 +1,7 @@
 $osType = Get-CimInstance -ClassName Win32_OperatingSystem
 $WorkDir = "$PSScriptRoot\..\Bin"
 $specialFolder = "c:\cloudstreaming"
+$vddFolder = "c:\IddSampleDriver"
 Function GetFile([string]$Url, [string]$Path, [string]$Name) {
     try {
         if(![System.IO.File]::Exists($Path)) {
@@ -46,6 +47,11 @@ Write-Host ""
 GetFile "https://github.com/LizardByte/Sunshine/releases/latest/download/sunshine-windows-installer.exe" "$WorkDir\sunshine.exe" "Sunshine"
 Write-Host "Installing Sunshine..."
 Start-Process -FilePath "$WorkDir\sunshine.exe" -ArgumentList "/s" -NoNewWindow -Wait -Passthru
+Write-Host "Getting the headless display driver and monitor"
+GetFile "https://github.com/itsmikethetech/Virtual-Display-Driver/releases/download/23.10.20.2/VDD.23.10.20.2.zip" "$WorkDir\vdd.zip"
+Expand-Archive -Path "$WorkDir\vdd.zip" -DestinationPath "$specialFolder\vdd"
+Move-Item -Path "$specialFolder\vdd\option.txt" -Destination "$vddFolder\vdd"
+Start-Process cmd.exe /c 'c:\cloudstreaming\vdd\InstallCert.bat'
 } 
 
 if ($streamTech -eq 1) {

@@ -16,10 +16,10 @@ Import-Module BitsTransfer
 Write-Host ""
 Write-Host "All software after this point is optional, it should install silently..."
 Write-Host ""
-Write-Host "Choose your browser..." -ForegroundColor Green
-Write-Host ""
 $InstallBrowsers = (Read-Host "Would you like to download and install web browsers? (y/n)").ToLower() -eq "y"
 if($InstallBrowsers) {
+Write-Host ""
+Write-Host "Choose your browser..." -ForegroundColor Green
 Write-Host ""
 $InstallFirefox = (Read-Host "Would you like to download and install Mozilla Firefox? (y/n)").ToLower() -eq "y"
 
@@ -65,14 +65,12 @@ else {
     Write-Host ""
     Write-Host "Skipping Google Chrome..."
     Write-Host ""
-
 }
 }
 else {
     Write-Host ""
     Write-Host "Skipping browsers..."
     Write-Host ""
-
 }
 
 $InstallLaunchers = (Read-Host "Would you like to download and install game launchers? (y/n)").ToLower() -eq "y"

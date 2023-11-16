@@ -102,9 +102,9 @@ else {
     Write-Host "Skipping Epic Games..."
     Write-Host ""
 }
+}
 else {
     Write-Host ""
     Write-Host "Skipping game launchers..."
     Write-Host ""
-}
 }

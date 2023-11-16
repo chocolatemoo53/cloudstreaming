@@ -29,10 +29,18 @@ Stop-Process -Name Explorer -Force
 $streamTech = Read-Host -Prompt 'Type the number corresponding your choice'
 
 if ($streamTech -eq 1) {
-    Write-Host ""
-    GetFile "https://builds.parsecgaming.com/package/parsec-windows.exe" "$WorkDir\parsec.exe" "Parsec"
-    Write-Host "Installing Parsec..."
-    Start-Process -FilePath "$WorkDir\parsec.exe" -ArgumentList "/norun /silent" -NoNewWindow -Wait -Passthru
+Write-Host ""
+GetFile "https://builds.parsecgaming.com/package/parsec-windows.exe" "$WorkDir\parsec.exe" "Parsec"
+Write-Host "Installing Parsec..."
+Start-Process -FilePath "$WorkDir\parsec.exe" -ArgumentList "/norun /silent" -NoNewWindow -Wait -Passthru
+Write-Host "Getting the headless display driver and monitor"
+GetFile "https://github.com/itsmikethetech/Virtual-Display-Driver/releases/download/23.10.20.2/VDD.23.10.20.2.zip" "$WorkDir\vdd.zip"
+New-Item -ItemType directory -Path "c:\IddSampleDriver"
+Expand-Archive -Path "$WorkDir\vdd.zip" -DestinationPath "$specialFolder\vdd"
+Move-Item -Path "$specialFolder\vdd\option.txt" -Destination "$vddFolder\option.txt"
+Start-Process cmd.exe /c 'c:\cloudstreaming\vdd\InstallCert.bat'
+Write-Host "Now install the display driver using add legacy hardware in device manager"
+Write-Host "Select display adapters, then have disk, then browse to c:\cloudstreaming\vdd\IddSampleDriver\IddSampleDriver.inf"
 }
 
 if ($streamTech -eq 2) {
@@ -49,9 +57,12 @@ Write-Host "Installing Sunshine..."
 Start-Process -FilePath "$WorkDir\sunshine.exe" -ArgumentList "/s" -NoNewWindow -Wait -Passthru
 Write-Host "Getting the headless display driver and monitor"
 GetFile "https://github.com/itsmikethetech/Virtual-Display-Driver/releases/download/23.10.20.2/VDD.23.10.20.2.zip" "$WorkDir\vdd.zip"
+New-Item -ItemType directory -Path "c:\IddSampleDriver"
 Expand-Archive -Path "$WorkDir\vdd.zip" -DestinationPath "$specialFolder\vdd"
-Move-Item -Path "$specialFolder\vdd\option.txt" -Destination "$vddFolder\vdd"
+Move-Item -Path "$specialFolder\vdd\option.txt" -Destination "$vddFolder\option.txt"
 Start-Process cmd.exe /c 'c:\cloudstreaming\vdd\InstallCert.bat'
+Write-Host "Now install the display driver using add legacy hardware in device manager"
+Write-Host "Select display adapters, then have disk, then browse to c:\cloudstreaming\vdd\IddSampleDriver\IddSampleDriver.inf"
 } 
 
 if ($streamTech -eq 1) {

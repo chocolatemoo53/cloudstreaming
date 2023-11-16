@@ -34,13 +34,13 @@ GetFile "https://builds.parsecgaming.com/package/parsec-windows.exe" "$WorkDir\p
 Write-Host "Installing Parsec..."
 Start-Process -FilePath "$WorkDir\parsec.exe" -ArgumentList "/norun /silent" -NoNewWindow -Wait -Passthru
 Write-Host "Getting the headless display driver and monitor"
-GetFile "https://github.com/itsmikethetech/Virtual-Display-Driver/releases/download/23.10.20.2/VDD.23.10.20.2.zip" "$WorkDir\vdd.zip"
+GetFile "https://github.com/ge9/IddSampleDriver/releases/download/0.0.1.4/IddSampleDriver.zip" "$WorkDir\idd.zip"
 New-Item -ItemType directory -Path "c:\IddSampleDriver"
-Expand-Archive -Path "$WorkDir\vdd.zip" -DestinationPath "$specialFolder\vdd" | Out-Null
-Move-Item -Path "$specialFolder\vdd\IddSampleDriver\option.txt" -Destination "$vddFolder\option.txt"
-Start-Process cmd.exe /c 'c:\cloudstreaming\vdd\IddSampleDriver\InstallCert.bat'
+Expand-Archive -Path "$WorkDir\idd.zip" -DestinationPath "$specialFolder\idd" | Out-Null
+Copy-Item -Path "$specialFolder\idd\IddSampleDriver\option.txt" -Destination "$vddFolder\option.txt"
+Start-Process cmd.exe /c 'c:\cloudstreaming\IddSampleDriver\InstallCert.bat'
 Write-Host "Now install the display driver using add legacy hardware in device manager"
-Write-Host "Select display adapters, then have disk, then browse to c:\cloudstreaming\vdd\IddSampleDriver\IddSampleDriver.inf"
+Write-Host "Select display adapters, then have disk, then browse to c:\cloudstreaming\IddSampleDriver\IddSampleDriver.inf"
 }
 
 if ($streamTech -eq 2) {
@@ -56,13 +56,13 @@ GetFile "https://github.com/LizardByte/Sunshine/releases/latest/download/sunshin
 Write-Host "Installing Sunshine..."
 Start-Process -FilePath "$WorkDir\sunshine.exe" -ArgumentList "/s" -NoNewWindow -Wait -Passthru
 Write-Host "Getting the headless display driver and monitor"
-GetFile "https://github.com/itsmikethetech/Virtual-Display-Driver/releases/download/23.10.20.2/VDD.23.10.20.2.zip" "$WorkDir\vdd.zip"
+GetFile "https://github.com/ge9/IddSampleDriver/releases/download/0.0.1.4/IddSampleDriver.zip" "$WorkDir\idd.zip"
 New-Item -ItemType directory -Path "c:\IddSampleDriver"
-Expand-Archive -Path "$WorkDir\vdd.zip" -DestinationPath "$specialFolder\vdd" | Out-Null
-Move-Item -Path "$specialFolder\vdd\IddSampleDriver\option.txt" -Destination "$vddFolder\option.txt"
-Start-Process cmd.exe /c 'c:\cloudstreaming\vdd\IddSampleDriver\InstallCert.bat'
+Expand-Archive -Path "$WorkDir\idd.zip" -DestinationPath "$specialFolder\idd" | Out-Null
+Copy-Item -Path "$specialFolder\idd\IddSampleDriver\option.txt" -Destination "$vddFolder\option.txt"
+Start-Process cmd.exe /c 'c:\cloudstreaming\IddSampleDriver\InstallCert.bat'
 Write-Host "Now install the display driver using add legacy hardware in device manager"
-Write-Host "Select display adapters, then have disk, then browse to c:\cloudstreaming\vdd\IddSampleDriver\IddSampleDriver.inf"
+Write-Host "Select display adapters, then have disk, then browse to c:\cloudstreaming\IddSampleDriver\IddSampleDriver.inf"
 } 
 
 if ($streamTech -eq 1) {

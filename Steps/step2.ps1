@@ -17,7 +17,7 @@ Import-Module BitsTransfer
 Write-Host "If you are not running Windows Server, a portion of this step is skipped" -ForegroundColor Red
 
 if($osType.ProductType -eq 3) {
-Write-Host "Applying general fixes and installing Windows Features for Compatibility..."
+Write-Host "Applying general fixes and installing Windows Features..."
 Enable-MMAgent -MemoryCompression | Out-Null
 New-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Control" -Name "ServicesPipeTimeout" -Value 600000 -PropertyType "DWord" | Out-Null
 Set-Service -Name Audiosrv -StartupType Automatic | Out-Null
@@ -44,6 +44,12 @@ if($osType.ProductType -eq 3) {
     Install-WindowsFeature -Name QWAVE | Out-Null 
 }
 
+Write-Host ""
+if($osType.ProductType -eq 3) {
+    Write-Host "Installing Windows Media Foundation..."
+    Install-WindowsFeature Server-Media-Foundation | Out-Null
+}
+
 $Login = (Read-Host "Do you need to setup auto login? (not needed for NiceDCV, y/n)").ToLower() -eq "y"
 
 if($Login) {
@@ -61,6 +67,7 @@ Set-ItemProperty $RegPath "DefaultDomainName" -Value "" -type String | Out-Null
 }
 
 Write-Host ""
+Write-Host "Would you like to change your time zone? (y/n)".ToLower() -eq "y"
 Write-Host 'Please use the full name (example: Pacific Standard Time)' -ForegroundColor Red
 $timezone = Read-Host -Prompt 'What is your time zone?'
 Set-TimeZone -Name "$timezone"

@@ -36,9 +36,9 @@ Start-Process -FilePath "$WorkDir\parsec.exe" -ArgumentList "/norun /silent" -No
 Write-Host "Getting the headless display driver and monitor"
 GetFile "https://github.com/itsmikethetech/Virtual-Display-Driver/releases/download/23.10.20.2/VDD.23.10.20.2.zip" "$WorkDir\vdd.zip"
 New-Item -ItemType directory -Path "c:\IddSampleDriver"
-Expand-Archive -Path "$WorkDir\vdd.zip" -DestinationPath "$specialFolder\vdd"
-Move-Item -Path "$specialFolder\vdd\option.txt" -Destination "$vddFolder\option.txt"
-Start-Process cmd.exe /c 'c:\cloudstreaming\vdd\InstallCert.bat'
+Expand-Archive -Path "$WorkDir\vdd.zip" -DestinationPath "$specialFolder\vdd" | Out-Null
+Move-Item -Path "$specialFolder\vdd\IddSampleDriver\option.txt" -Destination "$vddFolder\option.txt"
+Start-Process cmd.exe /c 'c:\cloudstreaming\vdd\IddSampleDriver\InstallCert.bat'
 Write-Host "Now install the display driver using add legacy hardware in device manager"
 Write-Host "Select display adapters, then have disk, then browse to c:\cloudstreaming\vdd\IddSampleDriver\IddSampleDriver.inf"
 }
@@ -58,9 +58,9 @@ Start-Process -FilePath "$WorkDir\sunshine.exe" -ArgumentList "/s" -NoNewWindow 
 Write-Host "Getting the headless display driver and monitor"
 GetFile "https://github.com/itsmikethetech/Virtual-Display-Driver/releases/download/23.10.20.2/VDD.23.10.20.2.zip" "$WorkDir\vdd.zip"
 New-Item -ItemType directory -Path "c:\IddSampleDriver"
-Expand-Archive -Path "$WorkDir\vdd.zip" -DestinationPath "$specialFolder\vdd"
-Move-Item -Path "$specialFolder\vdd\option.txt" -Destination "$vddFolder\option.txt"
-Start-Process cmd.exe /c 'c:\cloudstreaming\vdd\InstallCert.bat'
+Expand-Archive -Path "$WorkDir\vdd.zip" -DestinationPath "$specialFolder\vdd" | Out-Null
+Move-Item -Path "$specialFolder\vdd\IddSampleDriver\option.txt" -Destination "$vddFolder\option.txt"
+Start-Process cmd.exe /c 'c:\cloudstreaming\vdd\IddSampleDriver\InstallCert.bat'
 Write-Host "Now install the display driver using add legacy hardware in device manager"
 Write-Host "Select display adapters, then have disk, then browse to c:\cloudstreaming\vdd\IddSampleDriver\IddSampleDriver.inf"
 } 

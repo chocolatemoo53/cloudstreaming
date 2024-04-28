@@ -40,7 +40,7 @@ $InstallEdge = (Read-Host "Would you like to download and install Microsoft Edge
 
 if($InstallEdge) {
     Write-Host ""
-    GetFile "https://msedge.sf.dl.delivery.mp.microsoft.com/filestreamingservice/files/deca85f5-369c-4c01-933d-f1b544563b31/MicrosoftEdgeEnterpriseX64.msi" "$specialFolder\Installers\edge.msi" "Firefox" 
+    GetFile "http://go.microsoft.com/fwlink/?LinkID=2093437" "$specialFolder\Installers\edge.msi" "Firefox" 
     Write-Host "Installing Microsoft Edge..."
     Start-Process -FilePath "msiexec.exe" -Wait -ArgumentList '/qn /i C:\cloudstreaming\Installers\edge.msi'
     Write-Host ""
@@ -74,6 +74,7 @@ else {
 }
 
 $InstallLaunchers = (Read-Host "Would you like to download and install game launchers? (y/n)").ToLower() -eq "y"
+
 if($InstallLaunchers) {
     Write-Host ""
     Write-Host "Choose your game launchers..." -ForegroundColor Green

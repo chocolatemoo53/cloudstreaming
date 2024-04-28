@@ -67,15 +67,16 @@ Set-ItemProperty $RegPath "DefaultDomainName" -Value "" -type String | Out-Null
 }
 
 Write-Host ""
-$timeZoneQuestion = (Read-Host "Do you need to setup auto login? (not needed for NiceDCV, y/n)").ToLower() -eq "y"
+$timeZoneQuestion = (Read-Host "Do you want to set a time zone? (y/n)").ToLower() -eq "y"
+
 if($timeZoneQuestion) {
-Write-Host 'Please use the full name (example: Pacific Standard Time)' -ForegroundColor Red
+Write-Host "Please use the full name (example: Pacific Standard Time)"-ForegroundColor Red
 $timeZone = Read-Host -Prompt 'What is your time zone?'
 Set-TimeZone -Name "$timezone"
 }
 
 Write-Host ""
-Write-Host 'You may be able to remove system info from the desktop by forcing a wallpaper'
+Write-Host "You may be able to remove system info from the desktop by forcing a wallpaper"
 $setWallpaper = (Read-Host -Prompt 'Would you like to do so? (y/n)').ToLower() -eq "y"
 
 if($setWallpaper) {

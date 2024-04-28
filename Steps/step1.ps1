@@ -46,9 +46,21 @@ if ($streamTech -eq 3) {
 Write-Host ""
 GetFile "https://github.com/LizardByte/Sunshine/releases/latest/download/sunshine-windows-installer.exe" "$WorkDir\sunshine.exe" "Sunshine"
 Write-Host "Installing Sunshine..."
+Start-Process -FilePath "$WorkDir\sunshine.exe" -Wait
+Copy-Item -Path "$WorkDir\sunshine.ico" -Destination $specialfolder
+$TargetFile = "$ENV:windir\explorer.exe"
+$ShortcutFile = "$env:Public\Desktop\Sunshine Settings.lnk"
+$WScriptShell = New-Object -ComObject WScript.Shell
+$Shortcut = $WScriptShell.CreateShortcut($ShortcutFile)
+$Shortcut.TargetPath = $TargetFile
+$Shortcut.IconLocation = "$specialfolder\sunshine.ico"
+$Shortcut.Arguments = "https://127.0.0.1:47990"
+$Shortcut.Save()
+Write-Host "Sunshine Settings shortcut created successfully!" -ForegroundColor Green
 } 
 
 if ($streamTech -in 1, 3) {
+Write-Host ""
 $Audio = (Read-Host "Would you like to download audio drivers? (y/n)").ToLower() -eq "y"
 if($Audio) { 
 GetFile "https://download.vb-audio.com/Download_CABLE/VBCABLE_Driver_Pack43.zip" "$WorkDir\vbcable.zip" "VBCABLE"
@@ -60,6 +72,7 @@ Start-Process -FilePath "$WorkDir\vbcable\VBCABLE_Setup_x64.exe" -ArgumentList "
 }
 
 if ($streamTech -in 1, 3) {
+Write-Host ""
 $Monitor = (Read-Host "You may need a headless display/monitor. Would you like to install one? (y/n)").ToLower() -eq "y"
 if($Monitor) {
 Start-Process -FilePath "$WorkDir\sunshine.exe" -ArgumentList "/s" -NoNewWindow -Wait -Passthru
@@ -68,9 +81,10 @@ GetFile "https://github.com/ge9/IddSampleDriver/releases/download/0.0.1.4/IddSam
 New-Item -ItemType directory -Path "c:\IddSampleDriver"
 Expand-Archive -Path "$WorkDir\idd.zip" -DestinationPath "$specialFolder\idd" | Out-Null
 Copy-Item -Path "$specialFolder\idd\IddSampleDriver\option.txt" -Destination "$vddFolder\option.txt" | Out-Null
-Start-Process cmd.exe /c 'c:\cloudstreaming\idd\IddSampleDriver\InstallCert.bat'
+Start-Process cmd.exe -ArgumentList "/c C:\cloudstreaming\idd\IddSampleDriver\InstallCert.bat"
 Write-Host "Now install the display driver using add legacy hardware in device manager"
-Write-Host "Select display adapters, then have disk, then browse to c:\cloudstreaming\IddSampleDriver\IddSampleDriver.inf" }
+Write-Host "Select display adapters, then have disk, then browse to c:\cloudstreaming\idd\IddSampleDriver\IddSampleDriver.inf"
+Write-Host "While you are there, you may want to disable the Microsoft Basic Display Adapter" }
 }
 
 $Video = (Read-Host "Would you like to install video drivers? (skip if AWS, y/n)").ToLower() -eq "y"

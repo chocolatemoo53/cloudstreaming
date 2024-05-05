@@ -57,6 +57,12 @@ $Shortcut.IconLocation = "$specialfolder\sunshine.ico"
 $Shortcut.Arguments = "https://127.0.0.1:47990"
 $Shortcut.Save()
 Write-Host "Sunshine Settings shortcut created successfully!" -ForegroundColor Green
+Write-Host "Getting a script to match Moonlight client resolution..."
+GetFile "https://github.com/Nonary/ResolutionAutomation/releases/latest/download/ResolutionMatcher.zip" "$specialFolder\ResolutionAutomation.zip" "ResolutionAutomation"
+Write-Host "Extracting and installing the script..."
+Expand-Archive -Path "$specialFolder\ResolutionAutomation.zip" -DestinationPath "$specialFolder\ResolutionMatcher" | Out-Null
+Start-Process cmd.exe -ArgumentList "/c C:\cloudstreaming\ResolutionMatcher\install.bat"
+Write-Host "ResolutionAutomation and Sunshine installed successfully!" -ForegroundColor Green
 } 
 
 if ($streamTech -in 1, 3) {
@@ -87,7 +93,7 @@ Write-Host "Select display adapters, then have disk, then browse to c:\cloudstre
 Write-Host "While you are there, you may want to disable the Microsoft Basic Display Adapter" }
 }
 
-$Video = (Read-Host "Would you like to install video drivers? (skip if AWS, y/n)").ToLower() -eq "y"
+$Video = (Read-Host "Would you like to install video drivers? (skip on AWS, y/n)").ToLower() -eq "y"
  
 if($Video) {
 $Shell = New-Object -comObject WScript.Shell

@@ -88,12 +88,12 @@ New-Item -ItemType directory -Path "c:\IddSampleDriver"
 Expand-Archive -Path "$WorkDir\idd.zip" -DestinationPath "$specialFolder\idd" | Out-Null
 Copy-Item -Path "$specialFolder\idd\IddSampleDriver\option.txt" -Destination "$vddFolder\option.txt" | Out-Null
 Start-Process cmd.exe -ArgumentList "/c C:\cloudstreaming\idd\IddSampleDriver\InstallCert.bat"
-Write-Host "Now install the display driver using add legacy hardware in device manager"
+Write-Host "Now install the display driver using add legacy hardware in device manager."
 Write-Host "Select display adapters, then have disk, then browse to c:\cloudstreaming\idd\IddSampleDriver\IddSampleDriver.inf"
-Write-Host "While you are there, you may want to disable the Microsoft Basic Display Adapter" }
+Write-Host "While you are there, you will want to disable the Microsoft Basic Display Adapter." }
 }
 
-$Video = (Read-Host "Would you like to install video drivers? (skip on AWS, y/n)").ToLower() -eq "y"
+$Video = (Read-Host "Would you like to install video drivers (AWS and GCP)?").ToLower() -eq "y"
  
 if($Video) {
 $Shell = New-Object -comObject WScript.Shell
@@ -101,14 +101,13 @@ $Shortcut = $Shell.CreateShortcut("$Home\Desktop\Continue.lnk")
 $Shortcut.TargetPath = "powershell.exe"
 $Shortcut.Arguments = "-Command `"Set-ExecutionPolicy Unrestricted; & '$PSScriptRoot\...\starthere.ps1'`" -RebootSkip"
 $Shortcut.Save()
-GetFile "https://raw.githubusercontent.com/parsec-cloud/Cloud-GPU-Updater/master/GPUUpdaterTool.ps1" "$PSScriptRoot\GPUUpdaterTool.ps1" "Cloud GPU Updater" 
 $script = "-Command `"Set-ExecutionPolicy Unrestricted; & '$PSScriptRoot\..\starthere.ps1'`" -RebootSkip";
 $action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument $script
 $trigger = New-ScheduledTaskTrigger -AtLogon -RandomDelay "00:00:30"
 $principal = New-ScheduledTaskPrincipal -GroupId "BUILTIN\Administrators" -RunLevel Highest
 Register-ScheduledTask -Action $action -Trigger $trigger -Principal $principal -TaskName "Continue" -Description "Continue script" | Out-Null
-Write-Host "Please restart the server when Parsec asks, the script will start back up upon login" -ForegroundColor Red
-& $PSScriptRoot\GPUUpdaterTool.ps1
+Write-Host "Reboot your computer and run the shortcut on your desktop to continue the installation."
+& $PSScriptRoot\GPUDownloaderTool.ps1
 Stop-Transcript
 Pause
 }

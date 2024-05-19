@@ -35,6 +35,7 @@ if ($provider -eq 1) {
                 Copy-S3Object -BucketName $Bucket -Key $Object.Key -LocalFile $LocalFilePath -Region us-east-1
             }
         }
+    Start-Process -FilePath "$([Environment]::GetFolderPath('Desktop'))\NVIDIA\windows\latest\*.exe" -Wait -ArgumentList "/s /n"
     New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\nvlddmkm\Global" -Name "vGamingMarketplace" -PropertyType "DWord" -Value "2"
     Invoke-WebRequest -Uri "https://nvidia-gaming.s3.amazonaws.com/GridSwCert-Archive/GridSwCertWindows_2021_10_2.cert" -OutFile "$Env:PUBLIC\Documents\GridSwCert.txt"
     }
@@ -50,6 +51,7 @@ if ($provider -eq 1) {
                 Copy-S3Object -BucketName $Bucket -Key $Object.Key -LocalFile $LocalFilePath -Region us-east-1
             }
         }
+    Start-Process -FilePath "$([Environment]::GetFolderPath('Desktop'))\NVIDIA\latest\*.exe" -Wait -ArgumentList "/s /n"
     New-Item -Path "HKLM:\SOFTWARE\NVIDIA Corporation\Global" -Name GridLicensing
     New-ItemProperty -Path "HKLM:\SOFTWARE\NVIDIA Corporation\Global\GridLicensing" -Name "NvCplDisableManageLicensePage" -PropertyType "DWord" -Value "1"
     }

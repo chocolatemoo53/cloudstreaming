@@ -13,7 +13,9 @@ Function GetFile([string]$Url, [string]$Path, [string]$Name) {
     }
 }
 
-if($osType.ProductType -eq 3) {
+$Audio = (Read-Host "Would you like to turn off Internet Explorer restrictions on Server 2019 and below? (y/n)").ToLower() -eq "y"
+
+if $OldVersion {
 Write-Host "Removing IE restrictions..."
 Set-Itemproperty "HKLM:\SOFTWARE\Microsoft\Active Setup\Installed Components\{A509B1A7-37EF-4b3f-8CFC-4F3A74704073}" -name IsInstalled -value 0 -force | Out-Null
 Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Active Setup\Installed Components\{A509B1A8-37EF-4b3f-8CFC-4F3A74704073}" -Name IsInstalled -Value 0 -Force | Out-Null
@@ -79,12 +81,11 @@ Start-Process -FilePath "$WorkDir\vbcable\VBCABLE_Setup_x64.exe" -ArgumentList "
 
 if ($streamTech -in 1, 3) {
 Write-Host ""
-$Monitor = (Read-Host "You may need a headless display/monitor. Would you like to install one? (y/n)").ToLower() -eq "y"
+$Monitor = (Read-Host "You may need a headless display/monitor (requires 2022). Would you like to install? (y/n)").ToLower() -eq "y"
 if($Monitor) {
 Start-Process -FilePath "$WorkDir\sunshine.exe" -ArgumentList "/s" -NoNewWindow -Wait -Passthru
 Write-Host "Getting the headless display driver and monitor"
-GetFile "https://github.com/ge9/IddSampleDriver/releases/download/0.0.1.4/IddSampleDriver.zip" "$WorkDir\idd.zip"
-New-Item -ItemType directory -Path "c:\IddSampleDriver"
+GetFile "https://github.com/itsmikethetech/Virtual-Display-Driver/releases/download/23.12.2HDR/VDD.HDR.23.12.zip" "$WorkDir\idd.zip"
 Expand-Archive -Path "$WorkDir\idd.zip" -DestinationPath "$specialFolder\idd" | Out-Null
 Copy-Item -Path "$specialFolder\idd\IddSampleDriver\option.txt" -Destination "$vddFolder\option.txt" | Out-Null
 Start-Process cmd.exe -ArgumentList "/c C:\cloudstreaming\idd\IddSampleDriver\InstallCert.bat"

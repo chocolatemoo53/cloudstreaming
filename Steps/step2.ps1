@@ -14,22 +14,19 @@ Function GetFile([string]$Url, [string]$Path, [string]$Name) {
 
 Import-Module BitsTransfer
 
-Write-Host "If you are not running Windows Server, a portion of this step is skipped" -ForegroundColor Red
-
-if($osType.ProductType -eq 3) {
 Write-Host "Applying general fixes and installing Windows Features..."
+Write-Host ""
+
+$Fixes = (Read-Host "Do you want to apply some essential fixes? (may already be active on your system, y/n)").ToLower() -eq "y"
+if($Fixes) {
 Enable-MMAgent -MemoryCompression | Out-Null
 New-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Control" -Name "ServicesPipeTimeout" -Value 600000 -PropertyType "DWord" | Out-Null
 Set-Service -Name Audiosrv -StartupType Automatic | Out-Null
 reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Reliability" /v ShutDownReasonOn /t REG_DWORD /d 0 /f | Out-Null
-}
-
-Write-Host ""
-if ($osType.ProductType -eq 3) {
-    Write-Host "Applying accessibility flags..."
-    Set-ItemProperty "HKCU:\Control Panel\Accessibility\StickyKeys" "Flags" "506" | Out-Null
-    Set-ItemProperty "HKCU:\Control Panel\Accessibility\Keyboard Response" "Flags" "122"| Out-Null
-    Set-ItemProperty "HKCU:\Control Panel\Accessibility\ToggleKeys" "Flags" "58" | Out-Null
+Write-Host "Applying accessibility flags..."
+Set-ItemProperty "HKCU:\Control Panel\Accessibility\StickyKeys" "Flags" "506" | Out-Null
+Set-ItemProperty "HKCU:\Control Panel\Accessibility\Keyboard Response" "Flags" "122"| Out-Null
+Set-ItemProperty "HKCU:\Control Panel\Accessibility\ToggleKeys" "Flags" "58" | Out-Null
 }
 
 Write-Host ""

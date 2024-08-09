@@ -2,10 +2,10 @@ $specialFolder = "c:\cloudstreaming"
 
 $GamingBucket = "nvidia-gaming"
 $GamingKeyPrefix = "windows/latest"
-$GamingLocalPath = "$home\Desktop\NVIDIA"
 
 $Bucket = "ec2-windows-nvidia-drivers"
 $KeyPrefix = "latest"
+
 $LocalPath = "$home\Desktop\NVIDIA"
 
 Write-Host "Welcome! This script will install your GPU drivers."
@@ -37,20 +37,13 @@ if ($provider -eq 1) {
     
     if ($driverType -eq 1) {
         Write-Host "Downloading gaming driver..."
-        if (-not (Test-Path $GamingLocalPath)) {
-            New-Item -Path $GamingLocalPath -ItemType Directory | Out-Null
-        }
 
         $GamingObjects = Get-S3Object -BucketName $GamingBucket -KeyPrefix $GamingKeyPrefix -Region us-east-1
 
         foreach ($GamingObject in $GamingObjects) {
             if ($GamingObject.Key -and $GamingObject.Size -gt 0) {
-                $GamingLocalFilePath = Join-Path $GamingLocalPath $GamingObject.Key
+                $GamingLocalFilePath = Join-Path $LocalPath $GamingObject.Key
                 $GamingLocalDir = [System.IO.Path]::GetDirectoryName($GamingLocalFilePath)
-                
-                if (-not (Test-Path $GamingLocalDir)) {
-                    New-Item -Path $GamingLocalDir -ItemType Directory | Out-Null
-                }
 
                 Write-Output "Downloading $($GamingObject.Key) to $GamingLocalFilePath"
 
@@ -82,10 +75,6 @@ if ($provider -eq 1) {
                 $LocalFilePath = Join-Path $LocalPath $Object.Key
                 $LocalDir = [System.IO.Path]::GetDirectoryName($LocalFilePath)
                 
-                if (-not (Test-Path $LocalDir)) {
-                    New-Item -Path $LocalDir -ItemType Directory | Out-Null
-                }
-
                 try {
                     Copy-S3Object -BucketName $Bucket -Key $Object.Key -LocalFile $LocalFilePath -Region us-east-1
                 } catch {

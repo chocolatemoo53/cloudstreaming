@@ -82,7 +82,7 @@ if($streamTech -in 1, 3) {
     $Monitor = (Read-Host "You may need a headless display/monitor. Would you like to install one? (y/n)").ToLower() -eq "y"
     if($Monitor) {
         GetFile "https://github.com/ge9/IddSampleDriver/releases/download/0.0.1.4/IddSampleDriver.zip" "$WorkDir\idd.zip" "IddSampleDriver"
-        Expand-Archive -Path "$WorkDir\idd.zip" -DestinationPath "c:\IddSampleDriver" | Out-Null
+        Expand-Archive -Path "$WorkDir\idd.zip" -DestinationPath "c:\" | Out-Null
         Start-Process cmd.exe -ArgumentList "/c c:\IddSampleDriver\InstallCert.bat"
         Write-Host "This process is not done, you need to manually install the driver."
         Write-Host "Go to Device Manager, click on the main window, and click on Action > Add legacy hardware."

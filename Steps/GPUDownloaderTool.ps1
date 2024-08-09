@@ -107,7 +107,8 @@ if ($provider -eq 2) {
     & "$specialFolder\install_gpu_driver.ps1"
 }
 
-$restart = (Read-Host "To finish installation, you should restart. Restart now? (y/n)").ToLower()
+Write-Host "If you restart, the script will continue automatically on next boot, or you can select Continue on the desktop." 
+$restart = (Read-Host "Would you like to restart now? (y/n)").ToLower()
 if ($restart -eq "y") {
     Restart-Computer -Force
 }

@@ -1,7 +1,6 @@
 $osType = Get-CimInstance -ClassName Win32_OperatingSystem
 $WorkDir = "$PSScriptRoot\..\Bin"
 $specialFolder = "c:\cloudstreaming"
-$iddFolder = "c:\IddSampleDriver"
 Function GetFile([string]$Url, [string]$Path, [string]$Name) {
     try {
         if(![System.IO.File]::Exists($Path)) {
@@ -82,20 +81,20 @@ if($streamTech -in 1, 3) {
     Write-Host ""
     $Monitor = (Read-Host "You may need a headless display/monitor. Would you like to install one? (y/n)").ToLower() -eq "y"
     if($Monitor) {
-        GetFile "https://github.com/ge9/IddSampleDriver/releases/download/0.0.1.4/IddSampleDriver.zip" "$WorkDir\idd.zip"
-        Expand-Archive -Path "$WorkDir\idd.zip" -DestinationPath "$specialFolder\Drivers" | Out-Null
-        Copy-Item -Path "$specialFolder\Drivers\IddSampleDriver\option.txt" -Destination "$iddFolder\option.txt" | Out-Null
-        Start-Process cmd.exe -ArgumentList "/c C:\cloudstreaming\Drivers\IddSampleDriver\InstallCert.bat"
+        GetFile "https://github.com/ge9/IddSampleDriver/releases/download/0.0.1.4/IddSampleDriver.zip" "$WorkDir\idd.zip" "IddSampleDriver"
+        Expand-Archive -Path "$WorkDir\idd.zip" -DestinationPath "c:\IddSampleDriver" | Out-Null
+        Start-Process cmd.exe -ArgumentList "/c c:\IddSampleDriver\InstallCert.bat"
         Write-Host "This process is not done, you need to manually install the driver."
         Write-Host "Go to Device Manager, click on the main window, and click on Action > Add legacy hardware."
-        Write-Host "Select Display Adapters, Have Disk, then navigate to c:\cloudstreaming\Drivers\IddSampleDriver."
+        Write-Host "Select Install the hardware that I manually select from a list (Advanced)."
+        Write-Host "Select Display Adapters, Have Disk, then navigate to c:\IddSampleDriver."
         Write-Host "Select the INF file and continue. Select reboot later." 
         Write-Host "Only remove the basic display adapters after you have successfully connected to your stream tech of choice."
         Write-Host ""
     }
 }
 
-$Video = (Read-Host "Would you like to install video drivers (AWS and GCP)?").ToLower() -eq "y"
+$Video = (Read-Host "Would you like to install video drivers (AWS and GCP, y/n)?").ToLower() -eq "y"
  
 if($Video) {
 $Shell = New-Object -comObject WScript.Shell

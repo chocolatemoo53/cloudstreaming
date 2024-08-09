@@ -8,28 +8,31 @@ $KeyPrefix = "latest"
 
 $LocalPath = "$home\Desktop\NVIDIA"
 
-Write-Host "Welcome! This script will install your GPU drivers."
+Write-Host "Welcome! This tool will install your GPU drivers."
 
 Write-Host "Choose your cloud provider"
 Write-Host "1. AWS"
 Write-Host "2. Google Cloud"
 
-$provider = Read-Host -Prompt 'Type the number corresponding to your choice'
+$provider = Read-Host -Prompt 'Type the number corresponding to your cloud provider'
 
 if ($provider -eq 1) {
-    $access = Read-Host -Prompt 'Enter AWS access key'
-    $secret = Read-Host -Prompt 'Enter AWS secret key'
-    Write-Host "Setting credentials, this may take a while..." -ForegroundColor Yellow
-    Set-AWSCredential -AccessKey $access -SecretKey $secret -StoreAs default
-    Write-Host "Credentials set!" -ForegroundColor Green
+    if ((Get-AWSCredential -ProfileName default) -ne $null) {
+        Write-Host "AWS credentials already set!" -ForegroundColor Green
+    } else {
+        $access = Read-Host -Prompt 'Enter AWS access key'
+        $secret = Read-Host -Prompt 'Enter AWS secret key'
+        Write-Host "Setting credentials, this may take a while..." -ForegroundColor Yellow
+        Set-AWSCredential -AccessKey $access -SecretKey $secret -StoreAs default
+        Write-Host "Credentials set!" -ForegroundColor Green
+    }
+
     Write-Host ""
-    
     Write-Host "Choose your instance type"
     Write-Host "1. G4DN instance"
     Write-Host "2. G5 instance"
     $instanceType = Read-Host -Prompt 'Type the number corresponding to your instance type'
     Write-Host ""
-    
     Write-Host "Choose your driver type"
     Write-Host "1. Gaming"
     Write-Host "2. GRID"
@@ -37,9 +40,7 @@ if ($provider -eq 1) {
     
     if ($driverType -eq 1) {
         Write-Host "Downloading gaming driver..."
-
         $GamingObjects = Get-S3Object -BucketName $GamingBucket -KeyPrefix $GamingKeyPrefix -Region us-east-1
-
         foreach ($GamingObject in $GamingObjects) {
             if ($GamingObject.Key -and $GamingObject.Size -gt 0) {
                 $GamingLocalFilePath = Join-Path $LocalPath $GamingObject.Key
@@ -60,6 +61,7 @@ if ($provider -eq 1) {
         Start-Process -FilePath "$([Environment]::GetFolderPath('Desktop'))\NVIDIA\windows\latest\*.exe" -Wait -ArgumentList "/s /n"
         Write-Host "Registering driver..." 
         New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\nvlddmkm\Global" -Name "vGamingMarketplace" -PropertyType "DWord" -Value 2 -Force
+        Start-BitsTransfer -Source "https://nvidia-gaming.s3.amazonaws.com/GridSwCert-Archive/GridSwCertWindows_2023_9_22.cert" -Destination "$Env:PUBLIC\Documents\GridSwCert.txt"   
         Write-Host "Driver installed!" -ForegroundColor Green
     }
 

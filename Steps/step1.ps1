@@ -22,7 +22,7 @@ Stop-Process -Name Explorer -Force
 
 Write-Host "Choose your streaming technology"
 Write-Host "1. Parsec (Best for most people)"
-Write-Host "2. NiceDCV (For AWS customers)"
+Write-Host "2. Amazon DCV (For AWS customers)"
 Write-Host "3. Sunshine (For use with Moonlight)"
 Write-Host "Consult the wiki for more information"
 
@@ -38,7 +38,7 @@ Start-Process -FilePath "$WorkDir\parsec.exe" -ArgumentList "/norun /silent" -No
 if($streamTech -eq 2) {
 Write-Host ""
 GetFile "https://d1uj6qtbmh3dt5.cloudfront.net/nice-dcv-server-x64-Release.msi" "$specialFolder\nicedcv.msi" "NiceDCV" 
-Write-Host "Installing NiceDCV..."
+Write-Host "Installing Amazon DCV..."
 Start-Process -FilePath "msiexec.exe" -Wait -ArgumentList '/qn /i C:\cloudstreaming\nicedcv.msi'
 }
 
@@ -95,7 +95,7 @@ if($streamTech -in 1, 3) {
 }
 
 $Video = (Read-Host "Would you like to install video drivers (AWS and GCP, y/n)?").ToLower() -eq "y"
- 
+
 if($Video) {
 $Shell = New-Object -comObject WScript.Shell
 $Shortcut = $Shell.CreateShortcut("$Home\Desktop\Continue.lnk")

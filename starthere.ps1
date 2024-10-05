@@ -51,7 +51,7 @@ Write-Host "Welcome back, let's continue with step two!"
 	Write-Host ""
 	$ip = (Invoke-WebRequest ifconfig.me/ip).Content
 	Write-Host "Your IP address is $ip" -ForegroundColor Red
-  Write-Host "Use this IP address in Moonlight or NiceDCV, setup dynamic DNS if this a temporary address." -ForegroundColor Red
+  Write-Host "Use this IP address in Moonlight or Amazon DCV, setup dynamic DNS if this a temporary address." -ForegroundColor Red
 	Write-Host "If you liked the script, please star it on GitHub!" -ForegroundColor Green
 	
     $restart = (Read-Host "It is recommenended to restart your server. Restart now? (y/n)").ToLower();

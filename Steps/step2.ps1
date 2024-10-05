@@ -47,7 +47,7 @@ if($osType.ProductType -eq 3) {
     Install-WindowsFeature Server-Media-Foundation | Out-Null
 }
 
-$Login = (Read-Host "Do you need to setup auto login? (not needed for NiceDCV, y/n)").ToLower() -eq "y"
+$Login = (Read-Host "Do you need to setup auto login? (not needed for Amazon DCV, y/n)").ToLower() -eq "y"
 
 if($Login) {
 Write-Host ""

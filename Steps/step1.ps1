@@ -57,12 +57,7 @@ $Shortcut.IconLocation = "$specialfolder\sunshine.ico"
 $Shortcut.Arguments = "https://127.0.0.1:47990"
 $Shortcut.Save()
 Write-Host "Sunshine Settings shortcut created successfully!" -ForegroundColor Green
-Write-Host "Getting a script to match Moonlight client resolution..."
-GetFile "https://github.com/Nonary/ResolutionAutomation/releases/latest/download/ResolutionMatcher.zip" "$specialFolder\ResolutionAutomation.zip" "ResolutionAutomation"
-Write-Host "Extracting and installing the script..."
-Expand-Archive -Path "$specialFolder\ResolutionAutomation.zip" -DestinationPath "$specialFolder\ResolutionMatcher" | Out-Null
-Start-Process cmd.exe -ArgumentList "/c C:\cloudstreaming\ResolutionMatcher\install.bat"
-Write-Host "ResolutionAutomation and Sunshine installed successfully!" -ForegroundColor Green
+Write-Host "Sunshine installed successfully!" -ForegroundColor Green
 } 
 
 if($streamTech -in 1, 3) {

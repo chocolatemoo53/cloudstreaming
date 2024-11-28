@@ -1,126 +1,90 @@
 $WorkDir = "$PSScriptRoot\..\Bin"
 $specialFolder = "C:\cloudstreaming"
+
 Function GetFile([string]$Url, [string]$Path, [string]$Name) {
-    try {
-        if(![System.IO.File]::Exists($Path)) {
-	        Write-Host "Downloading"$Name"..."
-	        Start-BitsTransfer $Url $Path
-        }
-    } catch {
-        throw "Download failed"
+    if(!(Test-Path $Path)) {
+        Write-Host "Downloading $Name..."
+        try { Start-BitsTransfer $Url $Path }
+        catch { Write-Error "Download failed for $Name" }
     }
 }
 
 Import-Module BitsTransfer
 
-Write-Host ""
-Write-Host "All software after this point is optional, it should install silently..."
-Write-Host ""
-
-$InstallTailScale = (Read-Host "Would you like to download and install Tailscale? (y/n)").ToLower() -eq "y"
-if($InstallTailScale) {
-    Write-Host ""
-    GetFile "https://pkgs.tailscale.com/stable/tailscale-setup-latest.msi" "$specialFolder\Installers\tailscale.msi" "TailScale"
-    Write-Host "Installing Tailscale..."
-    Start-Process -FilePath "msiexec.exe" -Wait -ArgumentList '/qn /i C:\cloudstreaming\Installers\tailscale.msi'
-    Write-Host ""
-}
-else {
-    Write-Host ""
-    Write-Host "Skipping Tailscale..."
-    Write-Host ""
-}
-
-$InstallBrowsers = (Read-Host "Would you like to download and install web browsers? (y/n)").ToLower() -eq "y"
-if($InstallBrowsers) {
-Write-Host ""
-Write-Host "Choose your browser..." -ForegroundColor Green
-Write-Host ""
-$InstallFirefox = (Read-Host "Would you like to download and install Mozilla Firefox? (y/n)").ToLower() -eq "y"
-
-if($InstallFirefox) {
-    Write-Host ""
-    GetFile "https://download.mozilla.org/?product=firefox-msi-latest-ssl&os=win64&lang=en-US" "$specialFolder\Installers\firefox.msi" "Firefox" 
-    Write-Host "Installing Firefox..."
-    Start-Process -FilePath "msiexec.exe" -Wait -ArgumentList '/q /i C:\cloudstreaming\Installers\firefox.msi'
-    Write-Host ""
-}
-else {
-    Write-Host ""
-    Write-Host "Skipping Firefox..."
-    Write-Host ""
-}
-
-$InstallEdge = (Read-Host "Would you like to download and install Microsoft Edge? (y/n)").ToLower() -eq "y"
-
-if($InstallEdge) {
-    Write-Host ""
-    GetFile "http://go.microsoft.com/fwlink/?LinkID=2093437" "$specialFolder\Installers\edge.msi" "Microsoft Edge" 
-    Write-Host "Installing Microsoft Edge..."
-    Start-Process -FilePath "msiexec.exe" -Wait -ArgumentList '/qn /i C:\cloudstreaming\Installers\edge.msi'
-    Write-Host ""
-}
-else {
-    Write-Host ""
-    Write-Host "Skipping Microsoft Edge..."
-    Write-Host ""
-
+$installations = @{
+    "Utilities" = @{
+        "Tailscale" = @{
+            Url = "https://pkgs.tailscale.com/stable/tailscale-setup-latest.msi";
+            Path = "$specialFolder\Installers\tailscale.msi";
+            InstallArgs = '/qn /i'
+        }
+        "7-Zip" = @{
+            Url = "https://ninite.com/7zip/ninite.exe";
+            Path = "$specialFolder\Installers\7zip.exe";
+            InstallArgs = '/S'
+        }
+        "Notepad++" = @{
+            Url = "https://ninite.com/notepadplusplus/ninite.exe";
+            Path = "$specialFolder\Installers\notepadpp.exe";
+            InstallArgs = '/S'
+        }
+    }
+    "Browsers" = @{
+        "Firefox" = @{
+            Url = "https://download.mozilla.org/?product=firefox-msi-latest-ssl&os=win64&lang=en-US";
+            Path = "$specialFolder\Installers\firefox.msi";
+            InstallArgs = '/q /i'
+        }
+        "Edge" = @{
+            Url = "http://go.microsoft.com/fwlink/?LinkID=2093437";
+            Path = "$specialFolder\Installers\edge.msi";
+            InstallArgs = '/qn /i'
+        }
+        "Chrome" = @{
+            Url = "https://dl.google.com/tag/s/dl/chrome/install/googlechromestandaloneenterprise64.msi";
+            Path = "$specialFolder\Installers\chrome.msi";
+            InstallArgs = '/qn /i'
+        }
+    }
+    "Launchers" = @{
+        "Steam" = @{
+            Url = "https://cdn.akamai.steamstatic.com/client/installer/SteamSetup.exe";
+            Path = "$WorkDir\SteamSetup.exe";
+            InstallArgs = "/S"
+        }
+        "Epic" = @{
+            Url = "https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncherInstaller.msi";
+            Path = "$specialFolder\Installers\epic.msi";
+            InstallArgs = '/qn /i'
+        }
+    }
 }
 
-$InstallChrome = (Read-Host "Would you like to download and install Google Chrome? (y/n)").ToLower() -eq "y"
+function InstallSoftware($category, $softwareList) {
+    $installCategory = (Read-Host "Would you like to download and install $category? (y/n)").ToLower() -eq "y"
+    if ($installCategory) {
+        Write-Host "`nChoose your $category..." -ForegroundColor Green
+        foreach ($software in $softwareList.Keys) {
+            $install = (Read-Host "Would you like to download and install $software? (y/n)").ToLower() -eq "y"
+            if ($install) {
+                $item = $softwareList[$software]
+                GetFile $item.Url $item.Path $software
+                Write-Host "Installing $software..."
+                
+                if ($software -in @("Steam", "7-Zip", "Notepad++")) {
+                    Start-Process -FilePath $item.Path -ArgumentList $item.InstallArgs -NoNewWindow -Wait
+                } else {
+                    Start-Process -FilePath "msiexec.exe" -Wait -ArgumentList "$($item.InstallArgs) $($item.Path)"
+                }
+            } else {
+                Write-Host "`nSkipping $software...`n"
+            }
+        }
+    } else {
+        Write-Host "`nSkipping $category...`n"
+    }
+}
 
-if($InstallChrome) {
-    Write-Host ""
-    GetFile "https://dl.google.com/tag/s/dl/chrome/install/googlechromestandaloneenterprise64.msi" "$specialFolder\Installers\chrome.msi" "Google Chrome" 
-    Write-Host "Installing Google Chrome..."
-    Start-Process -FilePath "msiexec.exe" -Wait -ArgumentList '/qn /i C:\cloudstreaming\Installers\chrome.msi'
-    Write-Host ""
-}
-else {
-    Write-Host ""
-    Write-Host "Skipping Google Chrome..."
-    Write-Host ""
-}
-}
-else {
-    Write-Host ""
-    Write-Host "Skipping browsers..."
-    Write-Host ""
-}
-
-$InstallLaunchers = (Read-Host "Would you like to download and install game launchers? (y/n)").ToLower() -eq "y"
-
-if($InstallLaunchers) {
-    Write-Host ""
-    Write-Host "Choose your game launchers..." -ForegroundColor Green
-    Write-Host ""
-    $InstallSteam = (Read-Host "Would you like to download and install Steam? (y/n)").ToLower() -eq "y"
-    if($InstallSteam) {
-    Write-Host ""
-    GetFile "https://cdn.akamai.steamstatic.com/client/installer/SteamSetup.exe" "$WorkDir\SteamSetup.exe" "Steam"
-    Write-Host "Installing Steam..."
-    Start-Process -FilePath "$WorkDir\SteamSetup.exe" -ArgumentList "/S" -NoNewWindow -Wait -Passthru
-}
-else {
-    Write-Host ""
-    Write-Host "Skipping Steam..."
-    Write-Host ""
-}
-$InstallEpic = (Read-Host "Would you like to download and install Epic Games? (y/n)").ToLower() -eq "y"
-if($InstallEpic) {
-    Write-Host ""
-    GetFile "https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncherInstaller.msi" "$specialFolder\Installers\epic.msi" "Epic Games"
-    Write-Host "Installing Epic Games..."
-    Start-Process -FilePath "msiexec.exe" -Wait -ArgumentList '/qn /i C:\cloudstreaming\Installers\epic.msi'
-}
-else {
-    Write-Host ""
-    Write-Host "Skipping Epic Games..."
-    Write-Host ""
-}
-}
-else {
-    Write-Host ""
-    Write-Host "Skipping game launchers..."
-    Write-Host ""
-}
+InstallSoftware "Utilities" $installations.Utilities
+InstallSoftware "Browsers" $installations.Browsers
+InstallSoftware "Launchers" $installations.Launchers

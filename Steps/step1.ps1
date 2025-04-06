@@ -102,7 +102,7 @@ $action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument $script
 $trigger = New-ScheduledTaskTrigger -AtLogon -RandomDelay "00:00:30"
 $principal = New-ScheduledTaskPrincipal -GroupId "BUILTIN\Administrators" -RunLevel Highest
 Register-ScheduledTask -Action $action -Trigger $trigger -Principal $principal -TaskName "Continue" -Description "Continue script" | Out-Null
-& $PSScriptRoot\GPUDownloaderTool.ps1
+Start-Process powershell.exe -ArgumentList "-ExecutionPolicy Bypass -File `"$PSScriptRoot\GPUDownloaderTool.ps1`""
 Stop-Transcript
-Pause
+exit
 }

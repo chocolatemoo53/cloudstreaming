@@ -17,7 +17,7 @@ Write-Host "2. Google Cloud"
 $provider = Read-Host -Prompt 'Type the number corresponding to your cloud provider'
 
 if ($provider -eq 1) {
-    Write-Host "Checking for AWS credentials..."
+    Write-Host "Checking for AWS credentials, this may take a while..."
     if ((Get-AWSCredential -ProfileName default) -ne $null) {
         Write-Host "AWS credentials already set!" -ForegroundColor Green
     } else {

@@ -14,11 +14,13 @@ Function GetFile([string]$Url, [string]$Path, [string]$Name) {
 
 Import-Module BitsTransfer
 
-Write-Host "Applying general fixes and installing Windows Features..."
-Write-Host ""
+Write-Host "Choose your cloud provider"
+Write-Host "1. AWS"
+Write-Host "2. Google Cloud"
+Write-Host "3. Other cloud provider"
+$provider = Read-Host -Prompt 'Type the number corresponding to your cloud provider'
 
-$Fixes = (Read-Host "Do you want to apply some essential fixes? (may already be active on your system, y/n)").ToLower() -eq "y"
-if($Fixes) {
+if($provider -in 1, 2) {
 Enable-MMAgent -MemoryCompression | Out-Null
 New-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Control" -Name "ServicesPipeTimeout" -Value 600000 -PropertyType "DWord" | Out-Null
 Set-Service -Name Audiosrv -StartupType Automatic | Out-Null
@@ -29,22 +31,26 @@ Set-ItemProperty "HKCU:\Control Panel\Accessibility\Keyboard Response" "Flags" "
 Set-ItemProperty "HKCU:\Control Panel\Accessibility\ToggleKeys" "Flags" "58" | Out-Null
 }
 
-Write-Host ""
-if($osType.ProductType -eq 3) {
-    Write-Host "Installing .NET Framework 3.5..."
-    Install-WindowsFeature NET-Framework-Features | Out-Null
+if ($provider -in 1, 2) {
+    Write-Host ""
+    if($osType.ProductType -eq 3) {
+        Write-Host "Installing .NET Framework 3.5..."
+        Install-WindowsFeature NET-Framework-Features | Out-Null
+    }
+
+    Write-Host ""
+    if($osType.ProductType -eq 3) {
+        Write-Host "Installing Windows Media Foundation..."
+        Install-WindowsFeature Server-Media-Foundation | Out-Null
+    }
 }
 
-Write-Host ""
-if($osType.ProductType -eq 3) {
-    Write-Host "Installing Quality Windows Audio/Video Experience..."
-    Install-WindowsFeature -Name QWAVE | Out-Null 
-}
-
-Write-Host ""
-if($osType.ProductType -eq 3) {
-    Write-Host "Installing Windows Media Foundation..."
-    Install-WindowsFeature Server-Media-Foundation | Out-Null
+if($provider -eq 1) {
+    Write-Host ""
+    if($osType.ProductType -eq 3) {
+        Write-Host "Installing Quality Windows Audio/Video Experience..."
+        Install-WindowsFeature -Name QWAVE | Out-Null 
+    }
 }
 
 $Login = (Read-Host "Do you need to setup auto login? (not needed for Amazon DCV, y/n)").ToLower() -eq "y"
@@ -71,17 +77,3 @@ Write-Host "Please use the full name (example: Pacific Standard Time)"-Foregroun
 $timeZone = Read-Host -Prompt 'What is your time zone?'
 Set-TimeZone -Name "$timezone"
 }
-
-Write-Host ""
-Write-Host "You may be able to remove system info from the desktop by forcing a wallpaper"
-$setWallpaper = (Read-Host -Prompt 'Would you like to do so? (y/n)').ToLower() -eq "y"
-
-if($setWallpaper) {
-GetFile "https://cdn.wallpaperhub.app/cloudcache/7/c/2/f/3/4/7c2f345bdfcadb8a3faf483ebaa2e9aea712bbdb.jpg" "$WorkDir\wallpaper.jpg" "Default Windows 10 Wallpaper"
-Move-Item -Path "$WorkDir\wallpaper.jpg" -Destination "$specialfolder\wallpaper.jpg"
-Write-Host "Setting the wallpaper, you can set any wallpaper you like in the cloudstreaming folder..."
-New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies" -Name "System" | Out-Null
-New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name Wallpaper -value "c:\cloudstreaming\wallpaper.jpg" | Out-Null
-New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name WallpaperStyle -value 2 | Out-Null
-Stop-Process -Name Explorer -Force
-}	

@@ -30,7 +30,10 @@ Write-Host "All software after this point is optional and should install silentl
 
 # Tailscale
 if (Ask-User "Would you like to download and install Tailscale? (y/n)") {
-    InstallMSI "Tailscale" "https://pkgs.tailscale.com/stable/tailscale-setup-latest.msi" "$installerFolder\tailscale.msi"
+        $tailsacleInstaller = "$installerFolder\tailscale.exe"
+        GetFile "https://pkgs.tailscale.com/stable/tailscale-setup-latest.exe" $tailscaleInstaller "Tailscale"
+        Write-Host "Installing Tailscale..."
+        Start-Process -FilePath $tailscaleInstaller -ArgumentList "/S" -NoNewWindow -Wait
 } else {
     Write-Host "Skipping Tailscale..."
 }
@@ -55,7 +58,7 @@ if (Ask-User "Would you like to download and install web browsers? (y/n)") {
 # Game Launchers
 if (Ask-User "Would you like to download and install game launchers? (y/n)") {
     if (Ask-User "Would you like to download and install Steam? (y/n)") {
-        $steamInstaller = "$WorkDir\SteamSetup.exe"
+        $steamInstaller = "$installerFolder\SteamSetup.exe"
         GetFile "https://cdn.akamai.steamstatic.com/client/installer/SteamSetup.exe" $steamInstaller "Steam"
         Write-Host "Installing Steam..."
         Start-Process -FilePath $steamInstaller -ArgumentList "/S" -NoNewWindow -Wait

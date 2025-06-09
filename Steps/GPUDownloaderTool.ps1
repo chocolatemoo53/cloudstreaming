@@ -9,11 +9,9 @@ $KeyPrefix = "latest"
 $LocalPath = "$home\Desktop\NVIDIA"
 
 Write-Host "Welcome! This tool will install your GPU drivers."
-
 Write-Host "Choose your cloud provider"
 Write-Host "1. AWS"
 Write-Host "2. Google Cloud"
-
 $provider = Read-Host -Prompt 'Type the number corresponding to your cloud provider'
 
 if ($provider -eq 1) {
@@ -33,12 +31,12 @@ if ($provider -eq 1) {
     Write-Host "Choose your instance type"
     Write-Host "1. G4DN instance"
     Write-Host "2. G5 instance"
-    $instanceType = Read-Host -Prompt 'Type the number corresponding to your instance type'
+    $instanceType = Read-Host -Prompt 'Type the number corresponding to your instance type...'
     Write-Host ""
     Write-Host "Choose your driver type"
     Write-Host "1. Gaming"
     Write-Host "2. GRID"
-    $driverType = Read-Host -Prompt 'Type the number corresponding to your choice'
+    $driverType = Read-Host -Prompt 'Type the number corresponding to your choice...'
     
     if ($driverType -eq 1) {
         Write-Host "Downloading gaming driver..."
@@ -55,6 +53,10 @@ if ($provider -eq 1) {
                     Write-Output "Successfully downloaded $($GamingObject.Key)"
                 } catch {
                     Write-Error "Failed to copy $($GamingObject.Key): $_"
+                    Write-Host "Press enter to exit"
+                    Read-Host
+                    Stop-Transcript
+                    Throw "Error noted in the log file"
                 }
             }
         }
@@ -83,6 +85,10 @@ if ($provider -eq 1) {
                     Copy-S3Object -BucketName $Bucket -Key $Object.Key -LocalFile $LocalFilePath -Region us-east-1
                 } catch {
                     Write-Error "Failed to copy $($Object.Key): $_"
+                    Write-Host "Press enter to exit"
+                    Read-Host
+                    Stop-Transcript
+                    Throw "Error noted in the log file"
                 }
             }
         }
@@ -109,6 +115,7 @@ if ($provider -eq 2) {
     & "$specialFolder\install_gpu_driver.ps1"
 }
 
+Stop-Transcript
 Write-Host "If you restart, the script will continue automatically on next boot, or you can select Continue on the desktop." 
 $restart = (Read-Host "Would you like to restart now? (y/n)").ToLower()
 if ($restart -eq "y") {

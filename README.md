@@ -1,8 +1,8 @@
 # Welcome
 
-Hello there, thanks for visiting. This is a GitHub repo containing PowerShell scripts acting as one large one which make Windows Server closer to Windows 10 plus automate and ease the first time setup of a cloud server made for streaming games or applications. To learn more about the script including how to use the script in specific use cases like running this on AWS, please visit the wiki located [here](https://github.com/chocolatemoo53/cloudstreaming/wiki). If you ever need help, please [submit an issue](https://github.com/chocolatemoo53/cloudstreaming/issues) to GitHub. If there is something you don't want to run, most functions are independent from each other. Just erase the line from the step or skip the step entirely.
+Hello there, thanks for visiting. This script will help you configure a cloud Windows Server to stream games or applications. To learn more about the script please visit the wiki located [here](https://github.com/chocolatemoo53/cloudstreaming/wiki). If you ever need help, please [submit an issue](https://github.com/chocolatemoo53/cloudstreaming/issues) to GitHub.
 
-If you're ready to get started, start your cloud computer running Windows Server 2019/22 and paste the following code into PowerShell to download the script.
+This script is targeted at users looking to use AWS or Google Cloud with Windows Server 2025. Older versions and other cloud platforms are supported but some parts are skipped.
 
 ``` bash
 [Net.ServicePointManager]::SecurityProtocol = "tls12, tls11, tls" 

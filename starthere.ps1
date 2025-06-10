@@ -24,7 +24,7 @@ Write-HostCenter "Starting up..."
 New-Item -Path C:\cloudstreaming -ItemType directory | Out-Null
 New-Item -Path C:\cloudstreaming\Installers -ItemType directory | Out-Null
 New-Item -Path C:\cloudstreaming\Drivers -ItemType directory | Out-Null
-Write-HostCenter "The script is now are now ready to begin!" -ForegroundColor Green
+Write-HostCenter "The script is now ready to begin!" -ForegroundColor Green
 Write-Host ""
 
 if(!$RebootSkip) {

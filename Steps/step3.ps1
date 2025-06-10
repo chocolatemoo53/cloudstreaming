@@ -30,7 +30,7 @@ Write-Host "All software after this point is optional and should install silentl
 
 # Tailscale
 if (Ask-User "Would you like to download and install Tailscale? (y/n)") {
-        $tailsacleInstaller = "$installerFolder\tailscale.exe"
+        $tailscaleInstaller = "$installerFolder\tailscale.exe"
         GetFile "https://pkgs.tailscale.com/stable/tailscale-setup-latest.exe" $tailscaleInstaller "Tailscale"
         Write-Host "Installing Tailscale..."
         Start-Process -FilePath $tailscaleInstaller -ArgumentList "/S" -NoNewWindow -Wait

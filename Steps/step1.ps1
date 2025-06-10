@@ -1,5 +1,7 @@
 $osType = Get-CimInstance -ClassName Win32_OperatingSystem
 $WorkDir = "$PSScriptRoot\..\Bin"
+$driverFolder = "c:\cloudstreaming\Drivers"
+$installerFolder = "$specialFolder\Installers"
 $specialFolder = "c:\cloudstreaming"
 Function GetFile([string]$Url, [string]$Path, [string]$Name) {
     try {
@@ -22,23 +24,23 @@ $streamTech = Read-Host -Prompt 'Type the number corresponding your choice'
 
 if($streamTech -eq 1) {
 Write-Host ""
-GetFile "https://builds.parsecgaming.com/package/parsec-windows.exe" "$WorkDir\parsec.exe" "Parsec"
+GetFile "https://builds.parsecgaming.com/package/parsec-windows.exe" "$installerFolder\parsec.exe" "Parsec"
 Write-Host "Installing Parsec..."
-Start-Process -FilePath "$WorkDir\parsec.exe" -ArgumentList "/norun /silent" -NoNewWindow -Wait -Passthru
+Start-Process -FilePath "$installerFolder\parsec.exe" -ArgumentList "/norun /silent" -NoNewWindow -Wait -Passthru
 }
 
 if($streamTech -eq 2) {
 Write-Host ""
-GetFile "https://d1uj6qtbmh3dt5.cloudfront.net/nice-dcv-server-x64-Release.msi" "$specialFolder\nicedcv.msi" "NiceDCV" 
+GetFile "https://d1uj6qtbmh3dt5.cloudfront.net/nice-dcv-server-x64-Release.msi" "$installerFolder\nicedcv.msi" "NiceDCV" 
 Write-Host "Installing Amazon DCV..."
-Start-Process -FilePath "msiexec.exe" -Wait -ArgumentList '/qn /i C:\cloudstreaming\nicedcv.msi'
+Start-Process -FilePath "msiexec.exe" -Wait -ArgumentList '/qn /i C:\cloudstreaming\Installers\nicedcv.msi'
 }
 
 if($streamTech -eq 3) {
 Write-Host ""
-GetFile "https://github.com/LizardByte/Sunshine/releases/latest/download/sunshine-windows-installer.exe" "$WorkDir\sunshine.exe" "Sunshine"
+GetFile "https://github.com/LizardByte/Sunshine/releases/latest/download/sunshine-windows-installer.exe" "$installerFolder\sunshine.exe" "Sunshine"
 Write-Host "Installing Sunshine..."
-Start-Process -FilePath "$WorkDir\sunshine.exe" -Wait
+Start-Process -FilePath "$installerFolder\sunshine.exe" -Wait
 Copy-Item -Path "$WorkDir\sunshine.ico" -Destination $specialfolder
 $TargetFile = "$ENV:windir\explorer.exe"
 $ShortcutFile = "$env:Public\Desktop\Sunshine Settings.lnk"
@@ -56,29 +58,12 @@ if($streamTech -in 1, 3) {
 Write-Host ""
 $Audio = (Read-Host "Would you like to download audio drivers? (y/n)").ToLower() -eq "y"
 if($Audio) { 
-GetFile "https://download.vb-audio.com/Download_CABLE/VBCABLE_Driver_Pack43.zip" "$WorkDir\vbcable.zip" "VBCABLE"
+GetFile "https://download.vb-audio.com/Download_CABLE/VBCABLE_Driver_Pack45.zip" "$driverFolder\vbcable.zip" "VBCABLE"
 Write-Host "Installing VBCABLE..."
-Expand-Archive -Path "$WorkDir\vbcable.zip" -DestinationPath "$WorkDir\vbcable"
-(Get-AuthenticodeSignature -FilePath "$WorkDir\vbcable\vbaudio_cable64_win7.cat").SignerCertificate | Export-Certificate -Type CERT -FilePath "c:\cloudstreaming\vbcable.cer" | Out-Null
+Expand-Archive -Path "$driverFolder\vbcable.zip" -DestinationPath "$driverFolder\vbcable"
+(Get-AuthenticodeSignature -FilePath "$driverFolder\vbcable\vbaudio_cable64_win7.cat").SignerCertificate | Export-Certificate -Type CERT -FilePath "c:\cloudstreaming\Drivers\vbcable.cer" | Out-Null
 Import-Certificate -FilePath "C:\cloudstreaming\vbcable.cer" -CertStoreLocation 'Cert:\LocalMachine\TrustedPublisher' | Out-Null
 Start-Process -FilePath "$WorkDir\vbcable\VBCABLE_Setup_x64.exe" -ArgumentList "-i","-h" -NoNewWindow -Wait }
-}
-
-if($streamTech -in 1, 3) {
-    Write-Host ""
-    $Monitor = (Read-Host "You may need a headless display/monitor. Would you like to install one? (y/n)").ToLower() -eq "y"
-    if($Monitor) {
-        GetFile "https://github.com/ge9/IddSampleDriver/releases/download/0.0.1.4/IddSampleDriver.zip" "$WorkDir\idd.zip" "IddSampleDriver"
-        Expand-Archive -Path "$WorkDir\idd.zip" -DestinationPath "c:\" | Out-Null
-        Start-Process cmd.exe -ArgumentList "/c c:\IddSampleDriver\InstallCert.bat"
-        Write-Host "This process is not done, you need to manually install the driver."
-        Write-Host "Go to Device Manager, click on the main window, and click on Action > Add legacy hardware."
-        Write-Host "Select Install the hardware that I manually select from a list (Advanced)."
-        Write-Host "Select Display Adapters, Have Disk, then navigate to c:\IddSampleDriver."
-        Write-Host "Select the INF file and continue. Select reboot later." 
-        Write-Host "Only remove the basic display adapters after you have successfully connected to your stream tech of choice."
-        Write-Host ""
-    }
 }
 
 $Video = (Read-Host "Would you like to install video drivers (AWS and GCP, y/n)?").ToLower() -eq "y"
@@ -94,6 +79,6 @@ $action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument $script
 $trigger = New-ScheduledTaskTrigger -AtLogon -RandomDelay "00:00:30"
 $principal = New-ScheduledTaskPrincipal -GroupId "BUILTIN\Administrators" -RunLevel Highest
 Register-ScheduledTask -Action $action -Trigger $trigger -Principal $principal -TaskName "Continue" -Description "Continue script" | Out-Null
-Start-Process powershell.exe -ArgumentList "-ExecutionPolicy Bypass -File `"$PSScriptRoot\GPUDownloaderTool.ps1`""
-Pause
+Start-Process -FilePath "powershell.exe" -ArgumentList "-Command `"$PSScriptRoot\GPUDownloaderTool.ps1`""
+[Environment]::Exit(0)
 }

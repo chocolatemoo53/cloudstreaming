@@ -1,4 +1,5 @@
 $specialFolder = "c:\cloudstreaming"
+$installerFolder = "$specialFolder\Installers"
 
 $GamingBucket = "nvidia-gaming"
 $GamingKeyPrefix = "windows/latest"
@@ -7,6 +8,17 @@ $Bucket = "ec2-windows-nvidia-drivers"
 $KeyPrefix = "latest"
 
 $LocalPath = "$home\Desktop\NVIDIA"
+
+Function GetFile([string]$Url, [string]$Path, [string]$Name) {
+    try {
+        if(![System.IO.File]::Exists($Path)) {
+	        Write-Host "Downloading"$Name"..."
+	        Start-BitsTransfer $Url $Path
+        }
+    } catch {
+        throw "Download failed"
+    }
+}
 
 Write-Host "Welcome! This tool will install your GPU drivers."
 Write-Host "Choose your cloud provider"
@@ -39,6 +51,7 @@ if ($provider -eq 1) {
     $driverType = Read-Host -Prompt 'Type the number corresponding to your choice...'
     
     if ($driverType -eq 1) {
+        Write-Host ""
         Write-Host "Downloading gaming driver..."
         $GamingObjects = Get-S3Object -BucketName $GamingBucket -KeyPrefix $GamingKeyPrefix -Region us-east-1
         foreach ($GamingObject in $GamingObjects) {
@@ -93,6 +106,7 @@ if ($provider -eq 1) {
             }
         }
         
+        Write-Host ""
         Write-Host "Installing GRID driver..."
         Start-Process -FilePath "$([Environment]::GetFolderPath('Desktop'))\NVIDIA\latest\*.exe" -Wait -ArgumentList "/s /n"
         Write-Host "Registering driver..."
@@ -111,8 +125,16 @@ if ($provider -eq 1) {
 }
 
 if ($provider -eq 2) {
-    Invoke-WebRequest -Uri "https://github.com/GoogleCloudPlatform/compute-gpu-installation/raw/main/windows/install_gpu_driver.ps1" -OutFile "$specialFolder\install_gpu_driver.ps1"
-    & "$specialFolder\install_gpu_driver.ps1"
+    GetFile "https://github.com/GoogleCloudPlatform/compute-gpu-installation/raw/main/windows/install_gpu_driver.ps1" "$specialFolder\install_gpu_driver.ps1" "Google Cloud GPU Driver Script"
+    Start-Process -FilePath "powershell.exe" -ArgumentList "-Command `"$specialFolder\install_gpu_driver.ps1`""
+    [Environment]::Exit(0)
+}
+
+Write-Host "If you want to use HDR, you must have Windows Server 2025 and install a display driver."
+$displayDriver = (Read-Host "Would you like to install the driver? (y/n)").ToLower()
+if ($displayDriver -eq "y") {
+    GetFile "https://github.com/VirtualDrivers/Virtual-Display-Driver/releases/download/25.5.2/Virtual.Display.Driver-v25.05.03-setup-x64.exe" "$installerFolder\vdd-setup.exe" "Virtual Display Driver"
+    Start-Process -FilePath "$installerFolder\vdd-setup.exe" -NoNewWindow -Wait -Passthru
 }
 
 Stop-Transcript

@@ -1,5 +1,4 @@
 $osType = Get-CimInstance -ClassName Win32_OperatingSystem
-$WorkDir = "$PSScriptRoot\..\Bin"
 $specialFolder = "c:\cloudstreaming"
 Function GetFile([string]$Url, [string]$Path, [string]$Name) {
     try {
@@ -73,7 +72,7 @@ Write-Host ""
 $timeZoneQuestion = (Read-Host "Do you want to set a time zone? (y/n)").ToLower() -eq "y"
 
 if($timeZoneQuestion) {
-Write-Host "Please use the full name (example: Pacific Standard Time)"-ForegroundColor Red
+Write-Host "Please use the full name (example: Pacific Standard Time)" -ForegroundColor Red
 $timeZone = Read-Host -Prompt 'What is your time zone?'
 Set-TimeZone -Name "$timezone"
 }

@@ -127,7 +127,6 @@ if ($provider -eq 1) {
 if ($provider -eq 2) {
     GetFile "https://github.com/GoogleCloudPlatform/compute-gpu-installation/raw/main/windows/install_gpu_driver.ps1" "$specialFolder\install_gpu_driver.ps1" "Google Cloud GPU Driver Script"
     Start-Process -FilePath "powershell.exe" -ArgumentList "-Command `"$specialFolder\install_gpu_driver.ps1`""
-    [Environment]::Exit(0)
 }
 
 Write-Host "If you want to use HDR, you must have Windows Server 2025 and install a display driver."

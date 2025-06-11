@@ -1,8 +1,8 @@
-$osType = Get-CimInstance -ClassName Win32_OperatingSystem
 $WorkDir = "$PSScriptRoot\..\Bin"
-$driverFolder = "c:\cloudstreaming\Drivers"
-$installerFolder = "$specialFolder\Installers"
 $specialFolder = "c:\cloudstreaming"
+$driverFolder = "$specialFolder\Drivers"
+$installerFolder = "$specialFolder\Installers"
+
 Function GetFile([string]$Url, [string]$Path, [string]$Name) {
     try {
         if(![System.IO.File]::Exists($Path)) {
@@ -41,17 +41,18 @@ Write-Host ""
 GetFile "https://github.com/LizardByte/Sunshine/releases/latest/download/sunshine-windows-installer.exe" "$installerFolder\sunshine.exe" "Sunshine"
 Write-Host "Installing Sunshine..."
 Start-Process -FilePath "$installerFolder\sunshine.exe" -Wait
+Write-Host "Sunshine installed successfully!" -ForegroundColor Green
 Copy-Item -Path "$WorkDir\sunshine.ico" -Destination $specialfolder
-$TargetFile = "$ENV:windir\explorer.exe"
+$URL = "https://127.0.0.1:47990"
+$TargetFile = "cmd.exe"
 $ShortcutFile = "$env:Public\Desktop\Sunshine Settings.lnk"
 $WScriptShell = New-Object -ComObject WScript.Shell
 $Shortcut = $WScriptShell.CreateShortcut($ShortcutFile)
 $Shortcut.TargetPath = $TargetFile
+$Shortcut.Arguments = "/c start $URL"
 $Shortcut.IconLocation = "$specialfolder\sunshine.ico"
-$Shortcut.Arguments = "https://127.0.0.1:47990"
 $Shortcut.Save()
 Write-Host "Sunshine Settings shortcut created successfully!" -ForegroundColor Green
-Write-Host "Sunshine installed successfully!" -ForegroundColor Green
 } 
 
 if($streamTech -in 1, 3) {
@@ -63,7 +64,7 @@ Write-Host "Installing VBCABLE..."
 Expand-Archive -Path "$driverFolder\vbcable.zip" -DestinationPath "$driverFolder\vbcable"
 (Get-AuthenticodeSignature -FilePath "$driverFolder\vbcable\vbaudio_cable64_win7.cat").SignerCertificate | Export-Certificate -Type CERT -FilePath "c:\cloudstreaming\Drivers\vbcable.cer" | Out-Null
 Import-Certificate -FilePath "C:\cloudstreaming\vbcable.cer" -CertStoreLocation 'Cert:\LocalMachine\TrustedPublisher' | Out-Null
-Start-Process -FilePath "$WorkDir\vbcable\VBCABLE_Setup_x64.exe" -ArgumentList "-i","-h" -NoNewWindow -Wait }
+Start-Process -FilePath "$driverFolder\vbcable\VBCABLE_Setup_x64.exe" -ArgumentList "-i","-h" -NoNewWindow -Wait }
 }
 
 $Video = (Read-Host "Would you like to install video drivers (AWS and GCP, y/n)?").ToLower() -eq "y"

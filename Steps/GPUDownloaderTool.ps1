@@ -124,21 +124,23 @@ if ($provider -eq 1) {
     }
 }
 
-if ($provider -eq 2) {
-    GetFile "https://github.com/GoogleCloudPlatform/compute-gpu-installation/raw/main/windows/install_gpu_driver.ps1" "$specialFolder\install_gpu_driver.ps1" "Google Cloud GPU Driver Script"
-    Start-Process -FilePath "powershell.exe" -ArgumentList "-Command `"$specialFolder\install_gpu_driver.ps1`""
-}
-
 Write-Host "If you want to use HDR, you must have Windows Server 2025 and install a display driver."
 $displayDriver = (Read-Host "Would you like to install the driver? (y/n)").ToLower()
 if ($displayDriver -eq "y") {
     GetFile "https://github.com/VirtualDrivers/Virtual-Display-Driver/releases/download/25.5.2/Virtual.Display.Driver-v25.05.03-setup-x64.exe" "$installerFolder\vdd-setup.exe" "Virtual Display Driver"
-    Start-Process -FilePath "$installerFolder\vdd-setup.exe" -NoNewWindow -Wait -Passthru
+    Start-Process -FilePath "$installerFolder\vdd-setup.exe" -NoNewWindow -Wait
 }
 
-Stop-Transcript
-Write-Host "If you restart, the script will continue automatically on next boot, or you can select Continue on the desktop." 
-$restart = (Read-Host "Would you like to restart now? (y/n)").ToLower()
-if ($restart -eq "y") {
-    Restart-Computer -Force
+if ($provider -eq 2) {
+    GetFile "https://github.com/GoogleCloudPlatform/compute-gpu-installation/raw/main/windows/install_gpu_driver.ps1" "$specialFolder\install_gpu_driver.ps1" "Google Cloud GPU Driver Script"
+    Start-Process -FilePath "powershell.exe" -ArgumentList "-Command `"$specialFolder\install_gpu_driver.ps1`"" -NoNewWindow
+}
+
+if ($provider -eq 2){
+    Stop-Transcript
+    Write-Host "If you restart, the script will continue automatically on next boot, or you can select Continue on the desktop." 
+    $restart = (Read-Host "Would you like to restart now? (y/n)").ToLower()
+    if ($restart -eq "y") {
+        Restart-Computer -Force
+    }
 }

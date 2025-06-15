@@ -138,11 +138,19 @@ if ($provider -eq 1) {
     }
 
     if ($instanceType -eq 1) {
+        Start-Process cmd.exe -ArgumentList "/c cd C:\Windows\System32\DriverStore\FileRepository\nvgrid*\ && .\nvidia-smi -ac 2505,1177" -Wait
+    }
+    if ($instanceType -eq 2) {
         Start-Process cmd.exe -ArgumentList "/c cd C:\Windows\System32\DriverStore\FileRepository\nvgrid*\ && .\nvidia-smi -ac 5001,1590" -Wait
     }
-
-    if ($instanceType -eq 2) {
+    if ($instanceType -eq 3) {
         Start-Process cmd.exe -ArgumentList "/c cd C:\Windows\System32\DriverStore\FileRepository\nvgrid*\ && .\nvidia-smi -ac 6250,1710" -Wait
+    }
+    if ($instanceType -eq 4, 5) {
+        Start-Process cmd.exe -ArgumentList "/c cd C:\Windows\System32\DriverStore\FileRepository\nvgrid*\ && .\nvidia-smi -ac 6251,2040" -Wait
+    }
+    if ($instanceType -eq 6) {
+        Start-Process cmd.exe -ArgumentList "/c cd C:\Windows\System32\DriverStore\FileRepository\nvgrid*\ && .\nvidia-smi -ac 9001,2520" -Wait
     }
 }
 

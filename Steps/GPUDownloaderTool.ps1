@@ -152,6 +152,11 @@ if ($provider -eq 1) {
     if ($instanceType -eq 6) {
         Start-Process cmd.exe -ArgumentList "/c cd C:\Windows\System32\DriverStore\FileRepository\nvgrid*\ && .\nvidia-smi -ac 9001,2520" -Wait
     }
+
+    if ($osType.ProductType -eq 3) {
+        Write-Host "Installing Quality Windows Audio/Video Experience..."
+        Install-WindowsFeature -Name QWAVE | Out-Null 
+    }
 }
 
 Write-Host "If you want to stream an uncommon resolution or in HDR, you need a display driver."

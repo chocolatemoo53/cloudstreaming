@@ -50,7 +50,7 @@ if ($provider -eq 1) {
     Write-Host "5. Gr6 instance"
     Write-Host "6. G6e instance"
     $instanceType = Read-Host -Prompt 'Type the number corresponding to your instance type'
-    if ($instanceType -eq 2, 3, 4, 6) {
+    if ($instanceType -in 2, 3, 4, 6) {
         Write-Host ""
         Write-Host "Choose your driver type"
         Write-Host "1. Gaming"

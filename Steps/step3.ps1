@@ -28,6 +28,14 @@ Function Request-UserInput([string]$Prompt) {
 
 Write-Host "All software after this point is optional and should install silently..."
 
+#Microsoft Store
+if (Request-UserInput "Would you link to enable the Microsoft Store? (y/n)") {
+    wsreset -i
+}
+else {
+    Write-Host "Skipping the Microsoft Store..."
+}
+
 # Tailscale
 if (Request-UserInput "Would you like to download and install Tailscale? (y/n)") {
     InstallMSI "Tailscale" "https://pkgs.tailscale.com/stable/tailscale-setup-latest-amd64.msi" "$installerFolder\tailscale.msi"

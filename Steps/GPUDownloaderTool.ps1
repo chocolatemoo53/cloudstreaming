@@ -9,6 +9,8 @@ $KeyPrefix = "latest"
 
 $LocalPath = "$home\Desktop\NVIDIA"
 
+Start-Transcript -Path "$specialfolder\GPUDownloaderLog.txt"
+
 Function GetFile([string]$Url, [string]$Path, [string]$Name) {
     try {
         if (![System.IO.File]::Exists($Path)) {

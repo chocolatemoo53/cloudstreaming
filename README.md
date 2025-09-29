@@ -1,6 +1,6 @@
 # Welcome
 
-Hello there, thanks for visiting. This script will help you configure a cloud Windows Server to stream games or applications. To learn more about the script please visit the wiki located [here](https://github.com/chocolatemoo53/cloudstreaming/wiki). If you ever need help, please [submit an issue](https://github.com/chocolatemoo53/cloudstreaming/issues) to GitHub.
+Hello there, thanks for visiting. This script will help you configure a cloud Windows Server to stream games or applications. To learn more about the script please visit the wiki located [here](https://csdocs.chocolatemoo53.com). If you ever need help, please [submit an issue](https://github.com/chocolatemoo53/cloudstreaming/issues) to GitHub.
 
 This script is targeted at users looking to use AWS or Google Cloud with Windows Server 2025. Older versions and other cloud platforms are supported but some parts are skipped.
 

@@ -63,8 +63,8 @@ if ($streamTech -in 1, 3) {
         GetFile "https://download.vb-audio.com/Download_CABLE/VBCABLE_Driver_Pack45.zip" "$driverFolder\vbcable.zip" "VBCABLE"
         Write-Host "Installing VBCABLE..."
         Expand-Archive -Path "$driverFolder\vbcable.zip" -DestinationPath "$driverFolder\vbcable"
-(Get-AuthenticodeSignature -FilePath "$driverFolder\vbcable\vbaudio_cable64_win10.cat").SignerCertificate | Export-Certificate -Type CERT -FilePath "c:\cloudstreaming\Drivers\vbcable\vbcable.cer" | Out-Null
-        Import-Certificate -FilePath "C:\$driverFolder\vbcable\vbcable.cer" -CertStoreLocation 'Cert:\LocalMachine\TrustedPublisher' | Out-Null
+        (Get-AuthenticodeSignature -FilePath "$driverFolder\vbcable\vbaudio_cable64_win10.cat").SignerCertificate | Export-Certificate -Type CERT -FilePath "c:\cloudstreaming\Drivers\vbcable\vbcable.cer" | Out-Null
+        Import-Certificate -FilePath "$driverFolder\vbcable\vbcable.cer" -CertStoreLocation 'Cert:\LocalMachine\TrustedPublisher' | Out-Null
         Start-Process -FilePath "$driverFolder\vbcable\VBCABLE_Setup_x64.exe" -ArgumentList "-i", "-h" -NoNewWindow -Wait 
     }
 }

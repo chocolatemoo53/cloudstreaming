@@ -39,7 +39,8 @@ if ($streamTech -eq 2) {
 
 if ($streamTech -eq 3) {
     Write-Host ""
-    GetFile "https://github.com/LizardByte/Sunshine/releases/latest/download/sunshine-windows-installer.exe" "$installerFolder\sunshine.exe" "Sunshine"
+    GetFile "https://github.com/LizardByte/Sunshine/releases/latest/download/Sunshine-Windows-AMD64-installer.exe
+" "$installerFolder\sunshine.exe" "Sunshine"
     Write-Host "Installing Sunshine..."
     Start-Process -FilePath "$installerFolder\sunshine.exe" -Wait
     Write-Host "Sunshine installed successfully!" -ForegroundColor Green

@@ -1,11 +1,10 @@
 $specialFolder = "c:\cloudstreaming"
-$installerFolder = "$specialFolder\Installers"
 
 $GamingBucket = "nvidia-gaming"
 $GamingKeyPrefix = "windows/latest"
 
-$Bucket = "ec2-windows-nvidia-drivers"
-$KeyPrefix = "latest"
+$GRIDBucket = "ec2-windows-nvidia-drivers"
+$GRIDKeyPrefix = "latest"
 
 $LocalPath = "$home\Desktop\NVIDIA"
 
@@ -111,14 +110,14 @@ if ($provider -eq 1) {
             New-Item -Path $LocalPath -ItemType Directory | Out-Null
         }
 
-        $Objects = Get-S3Object -BucketName $Bucket -KeyPrefix $KeyPrefix -Region us-east-1
+        $Objects = Get-S3Object -BucketName $GRIDBucket -KeyPrefix $GRIDKeyPrefix -Region us-east-1
 
         foreach ($Object in $Objects) {
             if ($Object.Key -ne '' -and $Object.Size -ne 0) {
                 $LocalFilePath = Join-Path $LocalPath $Object.Key
                 
                 try {
-                    Copy-S3Object -BucketName $Bucket -Key $Object.Key -LocalFile $LocalFilePath -Region us-east-1
+                    Copy-S3Object -BucketName $GRIDBucket -Key $Object.Key -LocalFile $LocalFilePath -Region us-east-1
                 }
                 catch {
                     Write-Error "Failed to copy $($Object.Key): $_"
@@ -159,15 +158,6 @@ if ($provider -eq 1) {
         Write-Host "Installing Quality Windows Audio/Video Experience..."
         Install-WindowsFeature -Name QWAVE | Out-Null 
     }
-}
-
-Write-Host "If you want to stream an uncommon resolution or in HDR, you need a display driver."
-Write-Host "This driver works best with Windows Server 2025."
-Write-Host "You only need this with Parsec or Sunshine." -ForegroundColor Red
-$displayDriver = (Read-Host "Would you like to install the driver? (y/n)").ToLower() -eq "y"
-if ($displayDriver -eq "y") {
-    GetFile "https://github.com/VirtualDrivers/Virtual-Display-Driver/releases/download/25.5.2/Virtual.Display.Driver-v25.05.03-setup-x64.exe" "$installerFolder\vdd-setup.exe" "Virtual Display Driver"
-    Start-Process -FilePath "$installerFolder\vdd-setup.exe" -NoNewWindow -Wait
 }
 
 if ($provider -eq 2) {

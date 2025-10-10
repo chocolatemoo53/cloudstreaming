@@ -167,8 +167,14 @@ if ($provider -eq 2) {
 
 if ($provider -eq 1) {
     Stop-Transcript
+    $ip = (Invoke-WebRequest ifconfig.me/ip).Content
     Write-Host "The system will now restart to finalize the installation."
-    Write-Host "If you restart, the script will continue automatically on next boot, or you can select Continue on the desktop." 
+    Write-Host "Your IP address is $ip" -ForegroundColor Yellow
+    Write-Host "Use this IP address in Moonlight or Amazon DCV." -ForegroundColor Yellow
+    Write-Host "If you installed and setup Tailscale, then connect to Tailscale on your computer and pair the server to your computer." -ForegroundColor Yellow
+    Write-Host "You can connect using your chosen streaming technology after restarting." 
+    Write-Host "You must restart the system and disconnect from RDP." -ForegroundColor Red
+    Write-Host "The script will continue automatically on next boot, or you can select Continue on the desktop." 
     $restart = (Read-Host "Would you like to restart now? (y/n)").ToLower()
     if ($restart -eq "y") {
         Restart-Computer -Force

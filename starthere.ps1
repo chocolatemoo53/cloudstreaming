@@ -32,27 +32,26 @@ if (!$RebootSkip) {
     Stop-Process -Name Explorer -Force
   }
   Write-Host "Step 1 - Installing required software..." -ForegroundColor Yellow
-  & $PSScriptRoot\Steps\step1.ps1 -Main
+  & $PSScriptRoot\Steps\step1.ps1
+  Write-Host "Step 2 - Completing various tasks and requirements..."
+  & $PSScriptRoot\Steps\step2.ps1 
+  Write-Host "Step 3 - Installing video and audio drivers..."
+  & $PSScriptRoot\Steps\step3.ps1
 }
 else {
   if (Get-ScheduledTask | Where-Object { $_.TaskName -like "Continue" }) {
     Unregister-ScheduledTask -TaskName "Continue" -Confirm:$false
   }
-  Write-Host "Welcome back, let's continue with step two!"
+  Write-Host "Welcome back, let's move onto the final steps!"
 }
 Write-Host ""
-Write-Host "Step 2 - Applying settings and installing Windows Features..." -ForegroundColor Yellow
-& $PSScriptRoot\Steps\step2.ps1
+Write-Host "Step 4 - Disabling extra display adapters..." -ForegroundColor Yellow
+& $PSScriptRoot\Steps\step4.ps1
 Write-Host ""
-Write-Host "Step 3 - Installing applications..." -ForegroundColor Yellow
-& $PSScriptRoot\Steps\step3.ps1
+Write-Host "Step 5 - Installing applications..." -ForegroundColor Yellow
+& $PSScriptRoot\Steps\step5.ps1
 Write-Host ""
 Write-Host "Script and server setup is now complete!"
-$ip = (Invoke-WebRequest ifconfig.me/ip).Content
-Write-Host "Your IP address is $ip" -ForegroundColor Red
-Write-Host "Use this IP address in Moonlight or Amazon DCV." -ForegroundColor Yellow
-Write-Host "Connect to your server with Tailscale or setup a dynamic DNS service." -ForegroundColor Yellow
-Write-Host "If you liked the script, please star it on GitHub!" -ForegroundColor Green
 
 $restart = (Read-Host "It is recommenended to restart your server. Restart now? (y/n)").ToLower();
 if ($restart -eq "y") {

@@ -1,80 +1,31 @@
-$specialFolder = "C:\cloudstreaming"
-$installerFolder = "$specialFolder\Installers"
-
-Function GetFile([string]$Url, [string]$Path, [string]$Name) {
-    try {
-        if (!(Test-Path $Path)) {
-            Write-Host "Downloading $Name..."
-            Start-BitsTransfer $Url $Path
-        }
-    }
-    catch {
-        throw "Download failed for $Name"
-    }
+Write-Host ""
+$Audio = (Read-Host "Would you like to download audio drivers? (y/n)").ToLower() -eq "y"
+if ($Audio) { 
+    GetFile "https://download.vb-audio.com/Download_CABLE/VBCABLE_Driver_Pack45.zip" "$driverFolder\vbcable.zip" "VBCABLE"
+    Write-Host "Installing VBCABLE..."
+    Expand-Archive -Path "$driverFolder\vbcable.zip" -DestinationPath "$driverFolder\vbcable"
+    (Get-AuthenticodeSignature -FilePath "$driverFolder\vbcable\vbaudio_cable64_win10.cat").SignerCertificate | Export-Certificate -Type CERT -FilePath "c:\cloudstreaming\Drivers\vbcable\vbcable.cer" | Out-Null
+    Import-Certificate -FilePath "$driverFolder\vbcable\vbcable.cer" -CertStoreLocation 'Cert:\LocalMachine\TrustedPublisher' | Out-Null
+    Start-Process -FilePath "$driverFolder\vbcable\VBCABLE_Setup_x64.exe" -ArgumentList "-i", "-h" -NoNewWindow -Wait 
 }
 
-Import-Module BitsTransfer
+$Video = (Read-Host "Would you like to install video drivers (AWS and GCP, y/n)?").ToLower() -eq "y"
 
-Function InstallMSI([string]$name, [string]$url, [string]$path) {
-    GetFile $url $path $name
-    Write-Host "Installing $name..."
-    Start-Process -FilePath "msiexec.exe" -Wait -ArgumentList "/qn /i `"$path`""
-    Write-Host ""
-}
-
-Function Request-UserInput([string]$Prompt) {
-    return (Read-Host $Prompt).Trim().ToLower() -eq 'y'
-}
-
-Write-Host "All software after this point is optional and should install silently..."
-
-#Microsoft Store
-if (Request-UserInput "Would you link to enable the Microsoft Store? (y/n)") {
-    wsreset -i
+if ($Video) {
+    $Shell = New-Object -comObject WScript.Shell
+    $Shortcut = $Shell.CreateShortcut("$Home\Desktop\Continue.lnk")
+    $Shortcut.TargetPath = "powershell.exe"
+    $Shortcut.Arguments = "-Command `"Set-ExecutionPolicy Unrestricted; & '$PSScriptRoot\...\starthere.ps1'`" -RebootSkip"
+    $Shortcut.Save()
+    $script = "-Command `"Set-ExecutionPolicy Unrestricted; & '$PSScriptRoot\..\starthere.ps1'`" -RebootSkip";
+    $action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument $script
+    $trigger = New-ScheduledTaskTrigger -AtLogon -RandomDelay "00:00:30"
+    $principal = New-ScheduledTaskPrincipal -GroupId "BUILTIN\Administrators" -RunLevel Highest
+    Register-ScheduledTask -Action $action -Trigger $trigger -Principal $principal -TaskName "Continue" -Description "Continue script" | Out-Null
+    Start-Process -FilePath "powershell.exe" -ArgumentList "-Command `"$PSScriptRoot\GPUDownloaderTool.ps1`""
+    Write-Host "The script will continue in a new window..."
+    [Environment]::Exit(0)
 }
 else {
-    Write-Host "Skipping the Microsoft Store..."
-}
-
-# Tailscale
-if (Request-UserInput "Would you like to download and install Tailscale? (y/n)") {
-    InstallMSI "Tailscale" "https://pkgs.tailscale.com/stable/tailscale-setup-latest-amd64.msi" "$installerFolder\tailscale.msi"
-}
-else {
-    Write-Host "Skipping Tailscale..."
-}
-
-# Browsers
-if (Request-UserInput "Would you like to download and install web browsers? (y/n)") {
-    if (Request-UserInput "Would you like to download and install Mozilla Firefox? (y/n)") {
-        InstallMSI "Firefox" "https://download.mozilla.org/?product=firefox-msi-latest-ssl&os=win64&lang=en-US" "$installerFolder\firefox.msi"
-    }
-
-    if (Request-UserInput "Would you like to download and install Microsoft Edge? (y/n)") {
-        InstallMSI "Microsoft Edge" "http://go.microsoft.com/fwlink/?LinkID=2093437" "$installerFolder\edge.msi"
-    }
-
-    if (Request-UserInput "Would you like to download and install Google Chrome? (y/n)") {
-        InstallMSI "Google Chrome" "https://dl.google.com/tag/s/dl/chrome/install/googlechromestandaloneenterprise64.msi" "$installerFolder\chrome.msi"
-    }
-}
-else {
-    Write-Host "Skipping browsers..."
-}
-
-# Game Launchers
-if (Request-UserInput "Would you like to download and install game launchers? (y/n)") {
-    if (Request-UserInput "Would you like to download and install Steam? (y/n)") {
-        $steamInstaller = "$installerFolder\SteamSetup.exe"
-        GetFile "https://cdn.akamai.steamstatic.com/client/installer/SteamSetup.exe" $steamInstaller "Steam"
-        Write-Host "Installing Steam..."
-        Start-Process -FilePath $steamInstaller -ArgumentList "/S" -NoNewWindow -Wait
-    }
-
-    if (Request-UserInput "Would you like to download and install Epic Games? (y/n)") {
-        InstallMSI "Epic Games" "https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncherInstaller.msi" "$installerFolder\epic.msi"
-    }
-}
-else {
-    Write-Host "Skipping game launchers..."
+    Write-Host "The next step may break your RDP connection, you must reconnect using your streaming technology."
 }

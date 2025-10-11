@@ -1,3 +1,6 @@
+$specialFolder = "c:\cloudstreaming"
+$driverFolder = "$specialFolder\Drivers"
+
 Function GetFile([string]$Url, [string]$Path, [string]$Name) {
     try {
         if (![System.IO.File]::Exists($Path)) {

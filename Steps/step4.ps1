@@ -11,7 +11,7 @@ if (-not $moduleInstalled) {
 
 Import-Module $moduleName -Force
 
-$adapterToKeep = "Virtual Display Driver"
+$adapterToKeep = @("Virtual Display Driver", "Parsec Virtual Display Adapter")
 $gpuToKeep = "NVIDIA"
 $remoteDisplayKeywords = @("Microsoft Basic Display Adapter", "Microsoft Remote Display Adapter")
 

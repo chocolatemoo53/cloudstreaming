@@ -1,13 +1,21 @@
-$adapterToKeep = "VDD by MTT"
+$nugetInstalled = Get-PackageProvider -Name NuGet -Force -ErrorAction SilentlyContinue
+if (-not $nugetInstalled) {
+    Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
+}
+
+$moduleName = "DisplayConfig"
+$moduleInstalled = Get-InstalledModule -Name $moduleName -ErrorAction SilentlyContinue
+if (-not $moduleInstalled) {
+    Install-Module -Name $moduleName -Force -Scope CurrentUser -AllowClobber
+}
+
+Import-Module $moduleName -Force
+
+$adapterToKeep = "Virtual Display Driver"
 $gpuToKeep = "NVIDIA"
 $remoteDisplayKeywords = @("Microsoft Basic Display Adapter", "Microsoft Remote Display Adapter")
 
-if (-not (Get-InstalledModule -Name DisplayConfig -ErrorAction SilentlyContinue)) {
-    Install-Module -Name DisplayConfig -Force -Scope CurrentUser
-}
-
 $displayAdapters = Get-PnpDevice -Class "Display"
-
 foreach ($adapter in $displayAdapters) {
     if ($remoteDisplayKeywords -contains $adapter.FriendlyName) {
         if ($adapter.Status -eq "OK") {
@@ -16,13 +24,16 @@ foreach ($adapter in $displayAdapters) {
     }
 }
 
-$disp = Get-DisplayInfo | Where-Object { $_.DisplayName -eq $adapterToKeep }
-
-if ($disp) {
-    Set-DisplayPrimary -DisplayId $disp.DisplayId
-}
-else {
-    Write-Host "Error: $adapterToKeep not found. Could not set primary display."
+if (Get-Command Get-DisplayInfo -ErrorAction SilentlyContinue) {
+    $disp = Get-DisplayInfo | Where-Object { $_.DisplayName -eq $adapterToKeep }
+    if ($disp) {
+        Set-DisplayPrimary -DisplayId $disp.DisplayId
+    }
+    else {
+        Write-Host "Error: $adapterToKeep not found. Could not set primary display."
+    }
+} else {
+    Write-Host "Error: Get-DisplayInfo cmdlet not found. Please ensure DisplayConfig module is installed correctly."
 }
 
 foreach ($adapter in $displayAdapters) {

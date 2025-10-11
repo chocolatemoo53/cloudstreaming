@@ -66,5 +66,5 @@ if ($streamTech -eq 3) {
     $Shortcut.Save()
     Write-Host "Sunshine Settings shortcut created successfully!" -ForegroundColor Green
     GetFile "https://github.com/VirtualDrivers/Virtual-Display-Driver/raw/refs/heads/master/Community%20Scripts/silent-install.ps1" "$driverFolder\VDD.ps1" "VDD by MTT silent install script"
-    & $driverFolder\VDD.ps1
+    & $driverFolder\VDD.ps1 -DevconHash "C3816F79DEAC8E26C4A5C5791FE3F1F8104392D077D16941E7CCB6418FB3467A"
 } 

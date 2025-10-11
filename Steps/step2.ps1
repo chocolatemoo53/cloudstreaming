@@ -2,6 +2,17 @@ $osType = Get-CimInstance -ClassName Win32_OperatingSystem
 $specialFolder = "C:\cloudstreaming"
 $installerFolder = "$specialFolder\Installers"
 
+Function GetFile([string]$Url, [string]$Path, [string]$Name) {
+    try {
+        if (![System.IO.File]::Exists($Path)) {
+            Write-Host "Downloading"$Name"..."
+            Start-BitsTransfer $Url $Path
+        }
+    }
+    catch {
+        throw "Download failed"
+    }
+}
 Function InstallMSI([string]$name, [string]$url, [string]$path) {
     GetFile $url $path $name
     Write-Host "Installing $name..."

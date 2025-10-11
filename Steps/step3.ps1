@@ -1,3 +1,15 @@
+Function GetFile([string]$Url, [string]$Path, [string]$Name) {
+    try {
+        if (![System.IO.File]::Exists($Path)) {
+            Write-Host "Downloading"$Name"..."
+            Start-BitsTransfer $Url $Path
+        }
+    }
+    catch {
+        throw "Download failed"
+    }
+}
+
 Write-Host ""
 $Audio = (Read-Host "Would you like to download audio drivers? (y/n)").ToLower() -eq "y"
 if ($Audio) { 
@@ -28,4 +40,5 @@ if ($Video) {
 }
 else {
     Write-Host "The next step may break your RDP connection, you must reconnect using your streaming technology."
+    Read-Host "Press enter to continue"
 }

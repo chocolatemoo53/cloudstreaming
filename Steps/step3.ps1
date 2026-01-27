@@ -38,10 +38,10 @@ if ($Video) {
     $principal = New-ScheduledTaskPrincipal -GroupId "BUILTIN\Administrators" -RunLevel Highest
     Register-ScheduledTask -Action $action -Trigger $trigger -Principal $principal -TaskName "Continue" -Description "Continue script" | Out-Null
     Start-Process -FilePath "powershell.exe" -ArgumentList "-Command `"$PSScriptRoot\GPUDownloaderTool.ps1`""
-    Write-Host "The script will continue in a new window..."
-    [Environment]::Exit(0)
 }
 else {
     Write-Host "The next step may break your RDP connection, you must reconnect using your streaming technology."
     Read-Host "Press enter to continue"
+    Write-Host "The script will continue in a new window..."
+    [Environment]::Exit(0)
 }

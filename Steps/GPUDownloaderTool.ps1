@@ -167,7 +167,7 @@ if ($provider -eq 2) {
 
 if ($provider -eq 1) {
     Stop-Transcript
-    $ip = (Invoke-WebRequest ifconfig.me/ip).Content
+    $ip = (Invoke-RestMethod https://ifconfig.me/ip)
     Write-Host "The system will now restart to finalize the installation."
     Write-Host "Your IP address is $ip" -ForegroundColor Yellow
     Write-Host "Use this IP address in Moonlight or Amazon DCV." -ForegroundColor Yellow

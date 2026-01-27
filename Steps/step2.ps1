@@ -52,7 +52,7 @@ if ($Login) {
     Write-Host 'Configuring automatic login...'
     $RegPath = "hklm:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
     Set-ItemProperty $RegPath "AutoAdminLogon" -Value "1" -type String | Out-Null
-    $username = Read-Host -Prompt 'Enter your username'
+    $username = Read-Host -Prompt 'Enter your username (AWS uses Administrator by default)'
     $securedValue = Read-Host -AsSecureString -Prompt 'Please input your password'
     $bstr = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($securedValue)
     $value = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($bstr)

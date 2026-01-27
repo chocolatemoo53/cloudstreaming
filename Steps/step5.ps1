@@ -52,7 +52,6 @@ else {
     Write-Host "Skipping browsers..."
 }
 
-# Game Launchers
 if (Request-UserInput "Would you like to download and install game launchers? (y/n)") {
     if (Request-UserInput "Would you like to download and install Steam? (y/n)") {
         $steamInstaller = "$installerFolder\SteamSetup.exe"
@@ -64,6 +63,12 @@ if (Request-UserInput "Would you like to download and install game launchers? (y
     if (Request-UserInput "Would you like to download and install Epic Games? (y/n)") {
         InstallMSI "Epic Games" "https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncherInstaller.msi" "$installerFolder\epic.msi"
     }
+
+    if (Request-UserInput "Would you like to download and install Playnite? (y/n)")
+        $playniteInstaller = "$installerFolder\Playnite.exe"
+        GetFile "https://playnite.link/download/PlayniteInstaller.exe" $playniteInstaller "Playnite"
+        Write-Host "Install Playnite"
+        Start-Process -FilePath $playniteInstaller -ArgumentList "/silent" -NoNewWindow -Wait
 }
 else {
     Write-Host "Skipping game launchers..."

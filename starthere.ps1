@@ -19,17 +19,20 @@ if (-not(Elevated)) {
 Clear-Host
 
 if (!$RebootSkip) {
-  Write-Host "Your machine may restart at least once during this setup!" -ForegroundColor Red
+  Write-Host "Your machine may restart at least once during this setup! Please save important work!" -ForegroundColor Red
+  Write-Host ""
+  $OldVersion = (Read-Host "Are you using Windows Server 2019 and below? (y/n)").ToLower() -eq "y"
+  Write-Host ""
+  if ($OldVersion) {
+    Write-Host "Your current version of Windows Server is out of date. Please update to continue." -ForegroundColor Red
+    Read-Host "Press enter to exit"
+    [Environment]::Exit(0)
+  }
   Write-Host "Making special directories for the script..."
   New-Item -Path C:\cloudstreaming -ItemType directory | Out-Null
   New-Item -Path C:\cloudstreaming\Installers -ItemType directory | Out-Null
   New-Item -Path C:\cloudstreaming\Drivers -ItemType directory | Out-Null
-  $OldVersion = (Read-Host "Are you using Windows Server 2019 and below? (y/n)").ToLower() -eq "y"
-  if ($OldVersion) {
-    Write-Host "Windows Server 2025 is required." -ForegroundColor Red
-    Read-Host "Press enter to exit"
-    [Environment]::Exit(0)
-  }
+  Write-Host ""
   Write-Host "Step 1 - Installing required software..." -ForegroundColor Yellow
   & $PSScriptRoot\Steps\step1.ps1
   Write-Host "Step 2 - Completing various tasks and requirements..."

@@ -43,6 +43,7 @@ if (!$RebootSkip) {
 else {
   if (Get-ScheduledTask | Where-Object { $_.TaskName -like "Continue" }) {
     Unregister-ScheduledTask -TaskName "Continue" -Confirm:$false
+    Remove-Item -Path "$([Environment]::GetFolderPath('Desktop'))\Continue.lnk"
   }
   Write-Host "Welcome back, let's move onto the final steps!"
 }

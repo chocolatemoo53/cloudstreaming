@@ -1,47 +1,53 @@
-$specialFolder = "c:\cloudstreaming"
-$driverFolder = "$specialFolder\Drivers"
+$nugetInstalled = Get-PackageProvider -Name NuGet -Force -ErrorAction SilentlyContinue
+if (-not $nugetInstalled) {
+    Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
+}
 
-Function GetFile([string]$Url, [string]$Path, [string]$Name) {
-    try {
-        if (![System.IO.File]::Exists($Path)) {
-            Write-Host "Downloading"$Name"..."
-            Start-BitsTransfer $Url $Path
+$moduleName = "DisplayConfig"
+$moduleInstalled = Get-InstalledModule -Name $moduleName -ErrorAction SilentlyContinue
+if (-not $moduleInstalled) {
+    Install-Module -Name $moduleName -Force -Scope CurrentUser -AllowClobber
+}
+
+Import-Module $moduleName -Force
+
+$adapterToKeep = @("Virtual Display Driver", "Parsec Virtual Display Adapter")
+$gpuToKeep = "NVIDIA"
+$remoteDisplayKeywords = @("Microsoft Basic Display Adapter", "Microsoft Remote Display Adapter")
+
+$displayAdapters = Get-PnpDevice -Class "Display"
+foreach ($adapter in $displayAdapters) {
+    if ($remoteDisplayKeywords -contains $adapter.FriendlyName) {
+        if ($adapter.Status -eq "OK") {
+            Disable-PnpDevice -InstanceId $adapter.InstanceId -Confirm:$false
         }
     }
-    catch {
-        throw "Download failed"
+}
+
+if (Get-Command Get-DisplayInfo -ErrorAction SilentlyContinue) {
+    $disp = Get-DisplayInfo | Where-Object { $_.DisplayName -eq $adapterToKeep }
+    if ($disp) {
+        Set-DisplayPrimary -DisplayId $disp.DisplayId
+    }
+    else {
+        Write-Host "Error: $adapterToKeep not found. Could not set primary display."
+    }
+} else {
+    Write-Host "Error: Get-DisplayInfo cmdlet not found. Please ensure DisplayConfig module is installed correctly."
+}
+
+foreach ($adapter in $displayAdapters) {
+    if ($adapter.FriendlyName -notmatch $adapterToKeep -and $adapter.FriendlyName -notmatch $gpuToKeep) {
+        if ($adapter.Status -eq "OK") {
+            Disable-PnpDevice -InstanceId $adapter.InstanceId -Confirm:$false
+        }
     }
 }
 
-Write-Host ""
-$Audio = (Read-Host "Would you like to download audio drivers? (y/n)").ToLower() -eq "y"
-if ($Audio) { 
-    GetFile "https://download.vb-audio.com/Download_CABLE/VBCABLE_Driver_Pack45.zip" "$driverFolder\vbcable.zip" "VBCABLE"
-    Write-Host "Installing VBCABLE..."
-    Expand-Archive -Path "$driverFolder\vbcable.zip" -DestinationPath "$driverFolder\vbcable"
-    (Get-AuthenticodeSignature -FilePath "$driverFolder\vbcable\vbaudio_cable64_win10.cat").SignerCertificate | Export-Certificate -Type CERT -FilePath "c:\cloudstreaming\Drivers\vbcable\vbcable.cer" | Out-Null
-    Import-Certificate -FilePath "$driverFolder\vbcable\vbcable.cer" -CertStoreLocation 'Cert:\LocalMachine\TrustedPublisher' | Out-Null
-    Start-Process -FilePath "$driverFolder\vbcable\VBCABLE_Setup_x64.exe" -ArgumentList "-i", "-h" -NoNewWindow -Wait 
-}
-
-$Video = (Read-Host "Would you like to install video drivers (AWS and GCP, y/n)?").ToLower() -eq "y"
-
-if ($Video) {
-    $Shell = New-Object -comObject WScript.Shell
-    $Shortcut = $Shell.CreateShortcut("$Home\Desktop\Continue.lnk")
-    $Shortcut.TargetPath = "powershell.exe"
-    $Shortcut.Arguments = "-Command `"Set-ExecutionPolicy Unrestricted; & '$PSScriptRoot\...\starthere.ps1'`" -RebootSkip"
-    $Shortcut.Save()
-    $script = "-Command `"Set-ExecutionPolicy Unrestricted; & '$PSScriptRoot\..\starthere.ps1'`" -RebootSkip";
-    $action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument $script
-    $trigger = New-ScheduledTaskTrigger -AtLogon -RandomDelay "00:00:30"
-    $principal = New-ScheduledTaskPrincipal -GroupId "BUILTIN\Administrators" -RunLevel Highest
-    Register-ScheduledTask -Action $action -Trigger $trigger -Principal $principal -TaskName "Continue" -Description "Continue script" | Out-Null
-    Start-Process -FilePath "powershell.exe" -ArgumentList "-Command `"$PSScriptRoot\GPUDownloaderTool.ps1`""
+$primaryDisplay = Get-DisplayInfo | Where-Object { $_.IsPrimary }
+if ($primaryDisplay.DisplayName -eq $adapterToKeep) {
+    Write-Host "$adapterToKeep is now the primary display."
 }
 else {
-    Write-Host "The next step may break your RDP connection, you must reconnect using your streaming technology."
-    Read-Host "Press enter to continue"
-    Write-Host "The script will continue in a new window..."
-    [Environment]::Exit(0)
+    Write-Host "Error: $adapterToKeep is not the primary display."
 }

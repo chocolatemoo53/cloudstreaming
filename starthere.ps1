@@ -37,8 +37,6 @@ if (!$RebootSkip) {
   & $PSScriptRoot\Steps\step1.ps1
   Write-Host "Step 2 - Completing various tasks and requirements..."
   & $PSScriptRoot\Steps\step2.ps1 
-  Write-Host "Step 3 - Installing video and audio drivers..."
-  & $PSScriptRoot\Steps\step3.ps1
 }
 else {
   if (Get-ScheduledTask | Where-Object { $_.TaskName -like "Continue" }) {
@@ -48,11 +46,10 @@ else {
   Write-Host "Welcome back, let's move onto the final steps!"
 }
 Write-Host ""
-Write-Host "Step 4 - Disabling extra display adapters..." -ForegroundColor Yellow
-& $PSScriptRoot\Steps\step4.ps1
-Write-Host ""
-Write-Host "Step 5 - Installing applications..." -ForegroundColor Yellow
-& $PSScriptRoot\Steps\step5.ps1
+Write-Host "The next step may break your RDP connection, you must be using your streaming technology now!"
+Read-Host "Press enter to continue"
+Write-Host "Step 3 - Disabling extra display drivers/adapters..."
+& $PSScriptRoot\Steps\step3.ps1
 Write-Host ""
 Write-Host "Script and server setup is now complete!"
 
